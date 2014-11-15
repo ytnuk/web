@@ -3,7 +3,8 @@
 	"require": {
 		"webedit/application": "dev-master",
 		"nette/di": "dev-master",
-		"webedit/config": "dev-master"
+		"webedit/config": "dev-master",
+		"webedit/message": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
