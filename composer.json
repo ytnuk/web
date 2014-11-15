@@ -1,0 +1,13 @@
+{
+	"name": "webedit/web",
+	"require": {
+		"webedit/application": "dev-master",
+		"nette/di": "dev-master",
+		"webedit/config": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"WebEdit\\": "src/"
+		}
+	}
+}
