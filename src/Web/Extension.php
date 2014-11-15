@@ -6,6 +6,7 @@ use Kdyby\Translation;
 use Nette\Bridges;
 use Nette\DI;
 use WebEdit\Config;
+use WebEdit;
 
 /**
  * Class Extension
@@ -45,6 +46,11 @@ final class Extension extends DI\CompilerExtension implements Config\Provider
 			Bridges\ApplicationDI\RoutingExtension::class => [
 				'routes' => [
 					$config['mask'] => $config['metadata']
+				]
+			],
+			WebEdit\Alias\Extension::class => [
+				'pattern' => [
+					ucfirst($this->name) . '\*' => 'WebEdit\\$1'
 				]
 			]
 		];
