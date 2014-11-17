@@ -2,10 +2,7 @@
 
 namespace WebEdit\Web;
 
-use Kdyby\Translation;
-use Nette\Bridges;
-use Nette\DI;
-use WebEdit\Config;
+use Nette;
 use WebEdit;
 
 /**
@@ -13,7 +10,7 @@ use WebEdit;
  *
  * @package WebEdit\Web
  */
-final class Extension extends DI\CompilerExtension implements Config\Provider
+final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Config\Provider
 {
 
 	/**
@@ -38,12 +35,12 @@ final class Extension extends DI\CompilerExtension implements Config\Provider
 		$config['metadata']['web'] = $this->name;
 
 		return [
-			Bridges\ApplicationDI\ApplicationExtension::class => [
+			Nette\Bridges\ApplicationDI\ApplicationExtension::class => [
 				'mapping' => [
 					'*' => ucfirst($this->name) . '\*\*'
 				]
 			],
-			Bridges\ApplicationDI\RoutingExtension::class => [
+			Nette\Bridges\ApplicationDI\RoutingExtension::class => [
 				'routes' => [
 					$config['mask'] => $config['metadata']
 				]
