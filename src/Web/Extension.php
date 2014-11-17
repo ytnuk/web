@@ -50,8 +50,7 @@ final class Extension extends DI\CompilerExtension implements Config\Provider
 			],
 			WebEdit\Alias\Extension::class => [
 				'pattern' => [
-					ucfirst($this->name) . '\*' => 'WebEdit\\$1',
-					'WebEdit\\$1' => ucfirst($this->name) . '\*',
+					'WebEdit\*' => ucfirst($this->name) . '\\$1'
 				]
 			]
 		];
