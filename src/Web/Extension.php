@@ -21,7 +21,7 @@ final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Conf
 		'module' => 'Home',
 		'presenter' => 'Presenter',
 		'action' => 'view',
-		'locale' => 'en_US',
+		'locale' => 'en_US'
 	];
 
 	/**
@@ -30,13 +30,7 @@ final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Conf
 	public function getConfigResources()
 	{
 		$config = $this->getConfig($this->defaults);
-		$configResources = [
-			Nette\Bridges\ApplicationDI\RoutingExtension::class => [
-				'routes' => [
-					'//' . $this->name . '/[<locale [a-z]{2}_[A-Z]{2}?>/]<module>[/<action>][/<id [0-9]+>]' => $config
-				]
-			]
-		];
+		$configResources = [];
 		if ($_SERVER['SERVER_NAME'] === $this->name) {
 			$configResources[Nette\Bridges\ApplicationDI\ApplicationExtension::class] = [
 				'mapping' => [
@@ -49,6 +43,17 @@ final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Conf
 				]
 			];
 		}
+		if (is_array($config['locale'])) {
+			$locales = $config['locale'];
+			$config['locale'] = reset($locales);
+		} else {
+			$locales = [$config['locale']];
+		}
+		$configResources[Nette\Bridges\ApplicationDI\RoutingExtension::class] = [
+			'routes' => [
+				'//' . $this->name . '/[<locale (' . implode('|', $locales) . ')?>/]<module>[/<action>][/<id [0-9]+>]' => $config
+			]
+		];
 
 		return $configResources;
 	}
