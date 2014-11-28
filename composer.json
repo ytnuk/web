@@ -1,15 +1,15 @@
 {
-	"name": "kutny/web",
+	"name": "ytnuk/web",
 	"require": {
-		"kutny/application": "dev-master",
+		"ytnuk/application": "dev-master",
 		"nette/di": "dev-master",
-		"kutny/config": "dev-master",
-		"kutny/message": "dev-master",
-		"kutny/alias": "dev-master"
+		"ytnuk/config": "dev-master",
+		"ytnuk/message": "dev-master",
+		"ytnuk/alias": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
-			"Kutny\\": "src/"
+			"Ytnuk\\": "src/"
 		}
 	}
 }

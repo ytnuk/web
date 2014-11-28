@@ -1,16 +1,16 @@
 <?php
 
-namespace Kutny\Web;
+namespace Ytnuk\Web;
 
 use Nette;
-use Kutny;
+use Ytnuk;
 
 /**
  * Class Extension
  *
- * @package Kutny\Web
+ * @package Ytnuk\Web
  */
-final class Extension extends Nette\DI\CompilerExtension implements Kutny\Config\Provider
+final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config\Provider
 {
 
 	/**
@@ -37,9 +37,9 @@ final class Extension extends Nette\DI\CompilerExtension implements Kutny\Config
 					'*' => ucfirst($config['web']) . '\*\*'
 				]
 			];
-			$configResources[Kutny\Alias\Extension::class] = [
+			$configResources[Ytnuk\Alias\Extension::class] = [
 				'pattern' => [
-					'Kutny\*' => ucfirst($config['web']) . '\\$1'
+					'Ytnuk\*' => ucfirst($config['web']) . '\\$1'
 				]
 			];
 		}
