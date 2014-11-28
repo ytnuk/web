@@ -4,6 +4,7 @@ namespace Ytnuk\Web;
 
 use Nette;
 use Ytnuk;
+use Kdyby;
 
 /**
  * Class Extension
@@ -40,6 +41,16 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 			$configResources[Ytnuk\Alias\Extension::class] = [
 				'pattern' => [
 					'Ytnuk\*' => ucfirst($config['web']) . '\\$1'
+				]
+			];
+			$configResources[Kdyby\Translation\DI\TranslationExtension::class] = [
+				'dirs' => [
+					'%wwwDir%/../locale'
+				]
+			];
+			$configResources[Ytnuk\Templating\Extension::class] = [
+				'templates' => [
+					'%wwwDir%/../src'
 				]
 			];
 		}
