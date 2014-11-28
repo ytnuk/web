@@ -1,16 +1,16 @@
 <?php
 
-namespace WebEdit\Web;
+namespace Kutny\Web;
 
 use Nette;
-use WebEdit;
+use Kutny;
 
 /**
  * Class Extension
  *
- * @package WebEdit\Web
+ * @package Kutny\Web
  */
-final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Config\Provider
+final class Extension extends Nette\DI\CompilerExtension implements Kutny\Config\Provider
 {
 
 	/**
@@ -37,9 +37,9 @@ final class Extension extends Nette\DI\CompilerExtension implements WebEdit\Conf
 					'*' => ucfirst($config['web']) . '\*\*'
 				]
 			];
-			$configResources[WebEdit\Alias\Extension::class] = [
+			$configResources[Kutny\Alias\Extension::class] = [
 				'pattern' => [
-					'WebEdit\*' => ucfirst($config['web']) . '\\$1'
+					'Kutny\*' => ucfirst($config['web']) . '\\$1'
 				]
 			];
 		}

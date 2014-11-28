@@ -1,15 +1,15 @@
 <?php
 
-namespace WebEdit\Web;
+namespace Kutny\Web;
 
-use WebEdit;
+use Kutny;
 
 /**
  * Class Presenter
  *
- * @package WebEdit\Web
+ * @package Kutny\Web
  */
-abstract class Presenter extends WebEdit\Application\Presenter
+abstract class Presenter extends Kutny\Application\Presenter
 {
 
 	/**

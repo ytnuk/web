@@ -1,15 +1,15 @@
 {
-	"name": "webedit/web",
+	"name": "kutny/web",
 	"require": {
-		"webedit/application": "dev-master",
+		"kutny/application": "dev-master",
 		"nette/di": "dev-master",
-		"webedit/config": "dev-master",
-		"webedit/message": "dev-master",
-		"webedit/alias": "dev-master"
+		"kutny/config": "dev-master",
+		"kutny/message": "dev-master",
+		"kutny/alias": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
-			"WebEdit\\": "src/"
+			"Kutny\\": "src/"
 		}
 	}
 }
