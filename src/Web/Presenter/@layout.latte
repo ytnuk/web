@@ -3,16 +3,32 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		{control menu:title}
+		{snippet title}{control menu:title}{/snippet}
 		<link rel="stylesheet" type="text/css" href="{$basePath}/temp/application/styles/index.css">
 	</head>
 	<body>
+		{snippet content}
 		<header>
 			{control menu-uid-$presenter->web:navbar}
 		</header>
 		<main class="container">
 			{control menu:breadcrumb}{control menu:header}{control message}{include module}
 		</main>
+		{/snippet}
 		<script type="text/javascript" src="{$basePath}/temp/application/scripts/index.js"></script>
+		<script type="text/javascript">
+			$(function () {
+				$.nette.init(function (ajaxHandler) {
+					$(this.linkSelector).off('click.nette', ajaxHandler).on('click.nette', ajaxHandler);
+					$(this.formSelector).off('submit', ajaxHandler).on('submit.nette', ajaxHandler)
+						.off('click.nette', ':image', ajaxHandler).on('click.nette', ':image', ajaxHandler)
+						.off('click.nette', ':submit', ajaxHandler).on('click.nette', ':submit', ajaxHandler);
+				}, {
+					linkSelector: 'a:not(.dropdown-toggle)',
+					formSelector: 'form',
+					buttonSelector: 'input[type="submit"], button[type="submit"], input[type="image"]'
+				});
+			});
+		</script>
 	</body>
 </html>

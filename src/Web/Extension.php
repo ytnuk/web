@@ -5,6 +5,7 @@ namespace Ytnuk\Web;
 use Nette;
 use Ytnuk;
 use Kdyby;
+use VojtechDobes;
 
 /**
  * Class Extension
@@ -31,7 +32,9 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 	public function getConfigResources()
 	{
 		$config = $this->getConfig($this->defaults);
-		$configResources = [];
+		$configResources = [
+			VojtechDobes\NetteAjax\HistoryExtension::class => [],
+		];
 		if ($_SERVER['SERVER_NAME'] === $this->name) {
 			$configResources[Nette\Bridges\ApplicationDI\ApplicationExtension::class] = [
 				'mapping' => [

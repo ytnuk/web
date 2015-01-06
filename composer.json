@@ -5,7 +5,8 @@
 		"nette/di": "dev-master",
 		"ytnuk/config": "dev-master",
 		"ytnuk/message": "dev-master",
-		"ytnuk/alias": "dev-master"
+		"ytnuk/alias": "dev-master",
+		"vojtech-dobes/nette-ajax-history": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
