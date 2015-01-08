@@ -22,8 +22,8 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 	{
 		parent::beforeRender();
 		if ($this->isAjax()) {
-			$this->redrawControl('title');
-			$this->redrawControl('content');
+			$this['menu']->redrawControl();
+			$this->redrawControl();
 		}
 	}
 }
