@@ -18,12 +18,62 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 	 */
 	public $web;
 
-	protected function beforeRender()
+	/**
+	 * @var string
+	 * @persistent
+	 */
+	public $locale;
+
+	/**
+	 * @var Entity
+	 */
+	private $entity;
+
+	/**
+	 * @var Control\Factory
+	 */
+	private $control;
+
+	/**
+	 * @var Repository
+	 */
+	private $repository;
+
+	/**
+	 * @param Control\Factory $control
+	 * @param Repository $repository
+	 */
+	public function inject(Control\Factory $control, Repository $repository)
 	{
-		parent::beforeRender();
-		if ($this->isAjax()) {
-			$this['menu']->redrawControl();
-			$this->redrawControl();
+		$this->control = $control;
+		$this->repository = $repository;
+	}
+
+	/**
+	 * @param null $snippet
+	 * @param bool $redraw
+	 */
+	public function redrawControl($snippet = NULL, $redraw = TRUE)
+	{
+		parent::redrawControl($snippet, $redraw);
+		$this[Control::class]->redrawControl($snippet, $redraw);
+		$this[Ytnuk\Message\Control::class]->redrawControl($snippet, $redraw);
+	}
+
+	protected function startup()
+	{
+		parent::startup();
+		$this->entity = $this->repository->get($this->web);
+		if ( ! $this->entity) {
+			$this->error();
 		}
+	}
+
+	/**
+	 * @return Control
+	 */
+	protected function createComponentYtnukWebControl()
+	{
+		return $this->control->create($this->entity);
 	}
 }

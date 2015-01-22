@@ -2,10 +2,10 @@
 
 namespace Ytnuk\Web;
 
-use Nette;
-use Ytnuk;
 use Kdyby;
+use Nette;
 use VojtechDobes;
+use Ytnuk;
 
 /**
  * Class Extension
@@ -32,30 +32,44 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 	public function getConfigResources()
 	{
 		$config = $this->getConfig($this->defaults);
-		$configResources = [
-			VojtechDobes\NetteAjax\HistoryExtension::class => [],
-		];
 		if ($_SERVER['SERVER_NAME'] === $this->name) {
-			$configResources[Nette\Bridges\ApplicationDI\ApplicationExtension::class] = [
-				'mapping' => [
-					'*' => ucfirst($config['web']) . '\*\*'
+			$configResources = [
+				VojtechDobes\NetteAjax\HistoryExtension::class => [],
+				Ytnuk\Orm\Extension::class => [
+					'repositories' => [
+						$this->prefix('repository') => Repository::class
+					]
+				],
+				'services' => [
+					$this->prefix('control') => [
+						'implement' => Control\Factory::class,
+						'parameters' => ['web'],
+						'arguments' => ['%web%']
+					],
+				],
+				Nette\Bridges\ApplicationDI\ApplicationExtension::class => [
+					'mapping' => [
+						'*' => ucfirst($config['web']) . '\*\*'
+					]
+				],
+				Ytnuk\Alias\Extension::class => [
+					'pattern' => [
+						'Ytnuk\*' => ucfirst($config['web']) . '\\$1'
+					]
+				],
+				Kdyby\Translation\DI\TranslationExtension::class => [
+					'dirs' => [
+						'%wwwDir%/../locale'
+					]
+				],
+				Ytnuk\Templating\Extension::class => [
+					'templates' => [
+						'%wwwDir%/../src'
+					]
 				]
 			];
-			$configResources[Ytnuk\Alias\Extension::class] = [
-				'pattern' => [
-					'Ytnuk\*' => ucfirst($config['web']) . '\\$1'
-				]
-			];
-			$configResources[Kdyby\Translation\DI\TranslationExtension::class] = [
-				'dirs' => [
-					'%wwwDir%/../locale'
-				]
-			];
-			$configResources[Ytnuk\Templating\Extension::class] = [
-				'templates' => [
-					'%wwwDir%/../src'
-				]
-			];
+		} else {
+			$configResources = [];
 		}
 		if (is_array($config['locale'])) {
 			$locales = $config['locale'];

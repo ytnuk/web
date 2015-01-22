@@ -3,19 +3,36 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		{control menu:title}
-		<link rel="stylesheet" type="text/css" href="{$basePath}/temp/application/styles/index.css">
+		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title}
+		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
 	</head>
 	<body>
-		<header>
-			{control menu-uid-$presenter->web:navbar}
-		</header>
-		<nav class="container">
-			{control menu:breadcrumb}{control menu:header}
-		</nav>
-		<main class="container" n:inner-snippet="main">
-			{control message}{include module}
-		</main>
-		<script type="text/javascript" src="{$basePath}/temp/application/scripts/index.js"></script>
+		<div class="modal fade" id="modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title">title</h4>
+					</div>
+					<div class="modal-body">body</div>
+					<div class="modal-footer">footer</div>
+				</div>
+			</div>
+		</div>
+		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
+		<div class="container">
+			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
+			<header class="page-header">
+				{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}
+			</header>
+			{control Ytnuk\Message\Control}
+			<main n:inner-snippet>
+				{include module}
+			</main>
+			<a n:href=":Home:Presenter:view" target="_blank">TODO: content from snippets to modal with history</a>
+		</div>
+		<script type="text/javascript" src="{$basePath}/scripts/index.js"></script>
 	</body>
 </html>
