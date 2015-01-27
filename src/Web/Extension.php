@@ -79,7 +79,7 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 		}
 		$configResources[Nette\Bridges\ApplicationDI\RoutingExtension::class] = [
 			'routes' => [
-				'//' . $this->name . '/[<locale (' . implode('|', $locales) . ')?>/]<module>[/<action>][/<id [0-9]+>]' => $config
+				'//' . $this->name . '/[<locale (' . implode('|', $locales) . ')?>/]<module>[/<action [a-z]+>][/<id [0-9]+>]' => $config
 			]
 		];
 
