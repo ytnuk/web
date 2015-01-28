@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
-	<head>
+<html n:block="html">
+	<head n:block="head">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title}
-		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
+		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css" n:block="styles">
 	</head>
-	<body>
+	<body n:block="body">
 		<div class="modal fade" id="modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
@@ -33,6 +33,6 @@
 			</main>
 			<a n:href=":Home:Presenter:view" target="_blank">TODO: content from snippets to modal with history</a>
 		</div>
-		<script type="text/javascript" src="{$basePath}/scripts/index.js"></script>
+		<script type="text/javascript" src="{$basePath}/scripts/index.js" n:block="scripts"></script>
 	</body>
 </html>
