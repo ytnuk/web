@@ -47,11 +47,6 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 						'arguments' => ['%web%']
 					],
 				],
-				Nette\Bridges\ApplicationDI\ApplicationExtension::class => [
-					'mapping' => [
-						'*' => ucfirst($config['web']) . '\*\*'
-					]
-				],
 				Ytnuk\Alias\Extension::class => [
 					'pattern' => [
 						'Ytnuk\*' => ucfirst($config['web']) . '\\$1'
