@@ -60,6 +60,17 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 		$this[Ytnuk\Message\Control::class]->redrawControl($snippet, $redraw);
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getFilteredParameters()
+	{
+		$parameters = parent::getFilteredParameters();
+		unset($parameters['web'], $parameters['locale']);
+
+		return $parameters;
+	}
+
 	protected function startup()
 	{
 		parent::startup();
