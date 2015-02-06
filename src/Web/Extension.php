@@ -32,7 +32,7 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 	public function getConfigResources()
 	{
 		$config = $this->getConfig($this->defaults);
-		if ($_SERVER['SERVER_NAME'] === $this->name) {
+		if ($_SERVER['SERVER_NAME'] === $this->name) { //TODO: use active in web specific config
 			$configResources = [
 				VojtechDobes\NetteAjax\HistoryExtension::class => [],
 				Ytnuk\Orm\Extension::class => [
