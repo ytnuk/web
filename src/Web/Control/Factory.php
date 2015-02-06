@@ -17,5 +17,5 @@ interface Factory
 	 *
 	 * @return Ytnuk\Web\Control
 	 */
-	public function create($web);
+	public function create(Ytnuk\Web\Entity $web);
 }
