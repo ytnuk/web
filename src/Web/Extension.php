@@ -41,11 +41,7 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 					]
 				],
 				'services' => [
-					$this->prefix('control') => [
-						'implement' => Control\Factory::class,
-						'parameters' => ['web'],
-						'arguments' => ['%web%']
-					],
+					Control\Factory::class,
 				],
 				Ytnuk\Alias\Extension::class => [
 					'pattern' => [
