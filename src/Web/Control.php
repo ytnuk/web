@@ -39,10 +39,19 @@ final class Control extends Ytnuk\Application\Control
 		$this->menuControl = $menuControl;
 	}
 
-	public function redrawControl($snippet = NULL, $redraw = TRUE)
+	protected function startup()
 	{
-		parent::redrawControl($snippet, $redraw);
-		$this[Ytnuk\Menu\Control::class]->redrawControl($snippet, $redraw);
+		$this->getTemplate()->add('web', $this->web);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getViews()
+	{
+		return parent::getViews() + [
+			'title' => TRUE,
+		];
 	}
 
 	/**

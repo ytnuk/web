@@ -19,7 +19,6 @@ final class Repository extends Ytnuk\Orm\Repository
 	 */
 	public function get($project)
 	{
-		return $this->findBy(['project' => $project])
-			->fetch();
+		return $this->findBy(['project' => $project])->fetch();
 	}
 }
