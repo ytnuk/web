@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html n:block="html">
+<html>
 	<head n:block="head">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		{control Ytnuk\Web\Control:title}
-		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css" n:block="styles">
+		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
 	</head>
 	<body n:block="body">
 		<div class="modal fade" id="modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
-					<div class="modal-header">
+					<header class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h4 class="modal-title">title</h4>
-					</div>
-					<div class="modal-body">body</div>
-					<div class="modal-footer">footer</div>
+						<h1 class="modal-title" id="snippet--header"></h1>
+					</header>
+					<main class="modal-body" id="snippet--"></main>
+					<footer class="modal-footer" id="snippet--footer">
+						{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
+					</footer>
 				</div>
 			</div>
 		</div>
@@ -25,14 +27,14 @@
 		<div class="container">
 			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
 			<header class="page-header">
-				{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}
+				<h1 n:snippet="header">{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}</h1>
 			</header>
 			{control Ytnuk\Message\Control}
 			<main n:inner-snippet>
 				{include module}
+				<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
 			</main>
-			<a n:href=":Home:Presenter:view" target="_blank">TODO: content from snippets to modal with history</a>
 		</div>
-		<script type="text/javascript" src="{$basePath}/scripts/index.js" n:block="scripts"></script>
+		<script type="text/javascript" src="{$basePath}/scripts/index.js"></script>
 	</body>
 </html>
