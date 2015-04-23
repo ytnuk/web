@@ -60,9 +60,9 @@ final class Control extends Ytnuk\Application\Control
 	 */
 	protected function getViews()
 	{
-		return parent::getViews() + [
-			'title' => TRUE,
-		];
+		return [
+			'title' => FALSE,
+		] + parent::getViews();
 	}
 
 	/**

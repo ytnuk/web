@@ -7,6 +7,7 @@
 		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
 	</head>
 	<body n:block="body">
+		<span class="hidden" id="snippet--modal-open">0</span>
 		<div class="modal fade" id="modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
@@ -14,10 +15,10 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h1 class="modal-title" id="snippet--header"></h1>
+						<h1 class="modal-title" id="snippet-ytnukWebControl-ytnukMenuControl-header-"></h1>
 					</header>
 					<main class="modal-body" id="snippet--"></main>
-					<footer class="modal-footer" id="snippet--footer">
+					<footer class="modal-footer">
 						{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
 					</footer>
 				</div>
@@ -27,7 +28,7 @@
 		<div class="container">
 			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
 			<header class="page-header">
-				<h1 n:snippet="header">{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}</h1>
+				<h1>{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}</h1>
 			</header>
 			{control Ytnuk\Message\Control}
 			<main n:inner-snippet>
