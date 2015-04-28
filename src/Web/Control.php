@@ -50,7 +50,7 @@ final class Control extends Ytnuk\Application\Control
 		$this->getTemplate()->add('web', $this->web);
 	}
 
-	protected function startupTitle()
+	protected function renderTitle()
 	{
 		$this->getTemplate()->add('breadcrumb', $this[Ytnuk\Menu\Control::class]->getBreadcrumb());
 	}
