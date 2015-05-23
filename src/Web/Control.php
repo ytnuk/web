@@ -39,6 +39,9 @@ final class Control extends Ytnuk\Application\Control
 		$this->menuControl = $menuControl;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function redrawControl($snippet = NULL, $redraw = TRUE)
 	{
 		parent::redrawControl($snippet, $redraw);
@@ -56,7 +59,7 @@ final class Control extends Ytnuk\Application\Control
 	}
 
 	/**
-	 * @return array
+	 * @inheritdoc
 	 */
 	protected function getViews()
 	{

@@ -27,7 +27,7 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 	];
 
 	/**
-	 * @return array
+	 * @inheritdoc
 	 */
 	public function getConfigResources()
 	{

@@ -50,8 +50,7 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 	}
 
 	/**
-	 * @param null $snippet
-	 * @param bool $redraw
+	 * @inheritdoc
 	 */
 	public function redrawControl($snippet = NULL, $redraw = TRUE)
 	{
