@@ -58,6 +58,9 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 		$this[Control::class]->redrawControl($snippet, $redraw);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function startup()
 	{
 		parent::startup();

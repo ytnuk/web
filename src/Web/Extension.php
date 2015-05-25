@@ -50,6 +50,7 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 				],
 				Kdyby\Translation\DI\TranslationExtension::class => [
 					'dirs' => [
+						__DIR__ . '/../../locale',
 						'%wwwDir%/../locale'
 					]
 				],
