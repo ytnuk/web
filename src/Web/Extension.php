@@ -34,7 +34,6 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 		$config = $this->getConfig($this->defaults);
 		if ($_SERVER['SERVER_NAME'] === $this->name) {
 			$configResources = [
-				VojtechDobes\NetteAjax\HistoryExtension::class => [],
 				Ytnuk\Orm\Extension::class => [
 					'repositories' => [
 						$this->prefix('repository') => Repository::class
@@ -51,12 +50,6 @@ final class Extension extends Nette\DI\CompilerExtension implements Ytnuk\Config
 				Kdyby\Translation\DI\TranslationExtension::class => [
 					'dirs' => [
 						__DIR__ . '/../../locale',
-						'%wwwDir%/../locale'
-					]
-				],
-				Ytnuk\Templating\Extension::class => [
-					'templates' => [
-						'%wwwDir%/../src'
 					]
 				]
 			];
