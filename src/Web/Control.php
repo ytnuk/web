@@ -9,7 +9,7 @@ use Ytnuk;
  *
  * @package Ytnuk\Web
  */
-final class Control extends Ytnuk\Application\Control
+final class Control extends Ytnuk\Orm\Control
 {
 
 	/**
@@ -34,6 +34,7 @@ final class Control extends Ytnuk\Application\Control
 	 */
 	public function __construct(Entity $web, Repository $repository, Ytnuk\Menu\Control\Factory $menuControl)
 	{
+		parent::__construct($web);
 		$this->web = $web;
 		$this->repository = $repository;
 		$this->menuControl = $menuControl;
