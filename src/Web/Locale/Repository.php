@@ -1,5 +1,5 @@
 <?php
-namespace Ytnuk\Web;
+namespace Ytnuk\Web\Locale;
 
 use Ytnuk;
 

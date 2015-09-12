@@ -1,2 +1,6 @@
 presenter:
 	module: Web
+error:
+	presenter:
+		title:
+			default: Something went wrong

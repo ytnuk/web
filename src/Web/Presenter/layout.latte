@@ -3,16 +3,14 @@
 	<head n:block="head">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		{control Ytnuk\Web\Control:title}
+		<title n:inner-snippet="title">{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title snippet => FALSE} | {$web}</title>
 		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
 	</head>
 	<body n:block="body">
 		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
 		<div class="container">
 			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
-			<header class="page-header">
-				<h1>{control Ytnuk\Web\Control-Ytnuk\Menu\Control:header}</h1>
-			</header>
+			<h1>{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title}</h1>
 			{control Ytnuk\Message\Control}
 			<main n:inner-snippet>
 				{include module}
@@ -27,7 +25,7 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h1 class="modal-title" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('header')"></h1>
+						<h1 class="modal-title" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('title')"></h1>
 					</header>
 					<main class="modal-body" n:attr="id=>$control->getSnippetId()"></main>
 					<footer class="modal-footer" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('navbar')"></footer>

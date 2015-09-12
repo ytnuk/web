@@ -1,22 +1,12 @@
 <?php
-
 namespace Ytnuk\Web;
 
+use Nette;
 use Ytnuk;
 
-/**
- * Class Presenter
- *
- * @package Ytnuk\Web
- */
-abstract class Presenter extends Ytnuk\Application\Presenter
+abstract class Presenter
+	extends Ytnuk\Application\Presenter
 {
-
-	/**
-	 * @var string
-	 * @persistent
-	 */
-	public $web;
 
 	/**
 	 * @var string
@@ -26,8 +16,9 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 
 	/**
 	 * @var Entity
+	 * @persistent
 	 */
-	private $entity;
+	public $web;
 
 	/**
 	 * @var Control\Factory
@@ -39,42 +30,47 @@ abstract class Presenter extends Ytnuk\Application\Presenter
 	 */
 	private $repository;
 
-	/**
-	 * @param Control\Factory $control
-	 * @param Repository $repository
-	 */
-	public function inject(Control\Factory $control, Repository $repository)
-	{
+	public function inject(
+		Control\Factory $control,
+		Repository $repository
+	) {
 		$this->control = $control;
 		$this->repository = $repository;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function redrawControl($snippet = NULL, $redraw = TRUE)
+	protected function beforeRender()
 	{
-		parent::redrawControl($snippet, $redraw);
-		$this[Control::class]->redrawControl($snippet, $redraw);
+		parent::beforeRender();
+		$template = $this->getTemplate();
+		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
+			$template->add(
+				'web',
+				$this->web
+			);
+		}
 	}
 
-	/**
-	 * @inheritdoc
-	 */
+	public function redrawControl(
+		string $snippet = NULL,
+		bool $redraw = TRUE
+	) {
+		parent::redrawControl(
+			$snippet,
+			$redraw
+		);
+		$this[Ytnuk\Message\Control::class]->redrawControl();
+	}
+
 	protected function startup()
 	{
 		parent::startup();
-		$this->entity = $this->repository->get($this->web);
-		if ( ! $this->entity) {
+		if ( ! $this->web instanceof Entity) {
 			$this->error();
 		}
 	}
 
-	/**
-	 * @return Control
-	 */
-	protected function createComponentYtnukWebControl()
+	protected function createComponentYtnukWebControl() : Control
 	{
-		return $this->control->create($this->entity);
+		return $this->control->create($this->web);
 	}
 }
