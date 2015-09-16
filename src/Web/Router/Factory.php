@@ -24,7 +24,7 @@ final class Factory
 		parent::__construct();
 		foreach ($this->webs = $repository->findAll()->fetchPairs(current($repository->getEntityMetadata()->getPrimaryKey())) as $web) {
 			$this[] = new Nette\Application\Routers\Route(
-				'//[!<web>][!:8080]/<locale>/<module>[/<action>][/<id [0-9]+>]',
+				'//[!<web>][!:8080][/<locale>]/<module>[/<action>][/<id [0-9]+>]',
 				[
 					'module' => $web->menu->link->module,
 					'presenter' => $web->menu->link->presenter,
