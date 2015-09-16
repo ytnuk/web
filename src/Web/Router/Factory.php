@@ -24,16 +24,15 @@ final class Factory
 		parent::__construct();
 		foreach ($this->webs = $repository->findAll()->fetchPairs(current($repository->getEntityMetadata()->getPrimaryKey())) as $web) {
 			$this[] = new Nette\Application\Routers\Route(
-				'//<web ' . $web->id . '>[!:8080]/[<locale (' . implode(
-					'|',
-					array_keys($this->locales += $web->locales)
-				) . ')?>/]<module>[/<action>][/<id [0-9]+>]',
+				'//[!<web>][!:8080]/<locale>/<module>[/<action>][/<id [0-9]+>]',
 				[
 					'module' => $web->menu->link->module,
 					'presenter' => $web->menu->link->presenter,
 					'action' => $web->menu->link->action,
 					//TODO: maybe web should not rely on Menu/Entity at all? should have own Link/Entity
 					'web' => [
+						Nette\Application\Routers\Route::VALUE => $web,
+						Nette\Application\Routers\Route::PATTERN => $web->id,
 						Nette\Application\Routers\Route::FILTER_IN => function ($web) {
 							return $web instanceof Ytnuk\Web\Entity ? $web : isset($this->webs[$web]) ? $this->webs[$web] : NULL;
 						},
@@ -43,6 +42,10 @@ final class Factory
 					],
 					'locale' => [
 						Nette\Application\Routers\Route::VALUE => $web->locale,
+						Nette\Application\Routers\Route::PATTERN => implode(
+							'|',
+							array_keys($this->locales += $web->locales)
+						),
 						Nette\Application\Routers\Route::FILTER_IN => function ($locale) {
 							return $locale instanceof Ytnuk\Web\Entity ? $locale : isset($this->locales[$locale]) ? $this->locales[$locale] : NULL;
 						},
