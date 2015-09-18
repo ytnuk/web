@@ -49,7 +49,7 @@ final class Factory
 						Nette\Application\Routers\Route::FILTER_IN => function ($locale) {
 							return $locale instanceof Ytnuk\Web\Entity ? $locale : isset($this->locales[$locale]) ? $this->locales[$locale] : NULL;
 						},
-						Nette\Application\Routers\Route::FILTER_OUT => function ($locale) : string {
+						Nette\Application\Routers\Route::FILTER_OUT => function ($locale) {
 							return $locale instanceof Ytnuk\Translation\Locale\Entity ? $locale->id : $locale;
 						},
 					],
