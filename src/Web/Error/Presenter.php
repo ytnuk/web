@@ -93,6 +93,9 @@ class Presenter
 	public function sendPayload()
 	{
 		$this->getHttpResponse()->setCode(Nette\Http\IResponse::S200_OK);
+		$payload = $this->getPayload();
+		$payload->disableHistory = TRUE;
+		$payload->redirect = $this->getHttpRequest()->getUrl()->getRelativeUrl();
 		parent::sendPayload();
 	}
 }
