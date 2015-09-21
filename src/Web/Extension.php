@@ -49,6 +49,7 @@ final class Extension
 			],
 			'services' => [
 				Control\Factory::class,
+				Form\Control\Factory::class,
 			],
 			Nette\Bridges\ApplicationDI\ApplicationExtension::class => [
 				'errorPresenter' => 'Web:Error:Presenter',

@@ -1,5 +1,6 @@
 presenter:
-	module: Web
+	action:
+		edit: Edit web
 error:
 	presenter:
 		title:

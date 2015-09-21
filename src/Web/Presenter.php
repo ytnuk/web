@@ -3,34 +3,49 @@ namespace Ytnuk\Web;
 
 use Ytnuk;
 
-abstract class Presenter
-	extends Ytnuk\Application\Presenter
+final class Presenter
+	extends Ytnuk\Web\Application\Presenter
 {
 
 	/**
-	 * @var Ytnuk\Translation\Locale\Entity
-	 * @persistent
+	 * @var Repository
 	 */
-	public $locale;
-
-	/**
-	 * @var Entity
-	 * @persistent
-	 */
-	public $web;
+	private $repository;
 
 	/**
 	 * @var Control\Factory
 	 */
 	private $control;
 
-	public function inject(Control\Factory $control)
-	{
+	/**
+	 * @var Entity
+	 */
+	private $webEdit; //TODO:
+
+	public function __construct(
+		Repository $repository,
+		Control\Factory $control
+	) {
+		parent::__construct();
+		$this->repository = $repository;
 		$this->control = $control;
 	}
 
-	protected function createComponentYtnukWebControl() : Control
+	public function actionEdit(string $id)
 	{
-		return $this->control->create($this->web);
+		if ( ! $this->webEdit = $this->repository->getById($id)) {
+			$this->error();
+		}
+	}
+
+	public function renderEdit()
+	{
+		$this[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class][] = 'web.presenter.action.edit';
+	}
+
+	//TODO:
+	protected function createComponentYtnukWebControlTODO() : Control
+	{
+		return $this->control->create($this->webEdit ? : new Entity);
 	}
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head n:block="head">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title n:inner-snippet="title">{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title snippet => FALSE} | {$presenter->web}</title>
+		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
+	</head>
+	<body n:block="body">
+		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
+		<div class="container">
+			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
+			<h1>{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title}</h1>
+			{control Ytnuk\Message\Control}
+			<main n:inner-snippet>
+				{include module}
+				<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
+			</main>
+		</div>
+		<span class="hidden" id="snippet--modal-open"></span>
+		<div class="modal fade" id="modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<header class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h1 class="modal-title" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('title')"></h1>
+					</header>
+					<main class="modal-body" n:attr="id=>$control->getSnippetId()"></main>
+					<footer class="modal-footer" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('navbar')"></footer>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="{$basePath}/scripts/index.js"></script>
+	</body>
+</html>

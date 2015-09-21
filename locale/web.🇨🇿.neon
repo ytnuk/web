@@ -1,5 +1,6 @@
 presenter:
-	module: Web
+	action:
+		edit: Upravit web
 error:
 	presenter:
 		title:
