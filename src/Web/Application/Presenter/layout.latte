@@ -3,15 +3,41 @@
 	<head n:block="head">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		<title n:inner-snippet="title">{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title snippet => FALSE} | {$presenter->web}</title>
+		<title n:inner-snippet="title">{control web-menu:title snippet => FALSE} | {$presenter->web}</title>
 		<link rel="stylesheet" type="text/css" href="{$basePath}/styles/index.css">
 	</head>
 	<body n:block="body">
-		{control Ytnuk\Web\Control-Ytnuk\Menu\Control:navbar}
+		<nav class="navbar navbar-light bg-faded">
+			<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+				&#9776;
+			</button>
+			<div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+				<ul class="nav navbar-nav">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">Home
+							<span class="sr-only">(current)</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Features
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Pricing
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">About
+						</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		{control web-menu:navbar}
 		<div class="container">
-			{control Ytnuk\Web\Control-Ytnuk\Menu\Control:breadcrumb}
-			<h1>{control Ytnuk\Web\Control-Ytnuk\Menu\Control:title}</h1>
-			{control Ytnuk\Message\Control}
+			{control web-menu:breadcrumb}
+			<h1>{control web-menu:title}</h1>
+			{control message}
 			<main n:inner-snippet>
 				{include module}
 				<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
@@ -25,10 +51,10 @@
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<h1 class="modal-title" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('title')"></h1>
+						<h1 class="modal-title" n:attr="id=>$control[web][menu]->getSnippetId('title')"></h1>
 					</header>
 					<main class="modal-body" n:attr="id=>$control->getSnippetId()"></main>
-					<footer class="modal-footer" n:attr="id=>$control[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class]->getSnippetId('navbar')"></footer>
+					<footer class="modal-footer" n:attr="id=>$control[web][menu]->getSnippetId('navbar')"></footer>
 				</div>
 			</div>
 		</div>

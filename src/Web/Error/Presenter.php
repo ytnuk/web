@@ -77,7 +77,7 @@ class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this[Ytnuk\Web\Control::class][Ytnuk\Menu\Control::class][] = 'web.error.presenter.title.' . $this->view;
+		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = 'web.error.presenter.title.' . $this->view;
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			$template->add(

@@ -7,6 +7,8 @@ final class Control
 	extends Ytnuk\Orm\Control
 {
 
+	const NAME = 'web';
+
 	/**
 	 * @var Entity
 	 */
@@ -55,20 +57,20 @@ final class Control
 			$snippet,
 			$redraw
 		);
-		$this[Ytnuk\Menu\Control::class]->redrawControl(); //TODO: should not be here
+		$this[Ytnuk\Menu\Control::NAME]->redrawControl(); //TODO: should not be here
 	}
 
-	protected function createComponentYtnukMenuControl() : Ytnuk\Menu\Control //TODO: should not be here
+	protected function createComponentMenu() : Ytnuk\Menu\Control //TODO: should not be here
 	{
 		return $this->menuControl->create($this->web->menu);
 	}
 
-	protected function createComponentYtnukOrmFormControl() : Form\Control
+	protected function createComponentForm() : Form\Control
 	{
 		return $this->formControl->create($this->web);
 	}
 
-	protected function createComponentYtnukGridControl() : Ytnuk\Orm\Grid\Control
+	protected function createComponentGrid() : Ytnuk\Orm\Grid\Control
 	{
 		return $this->gridControl->create($this->repository);
 	}
