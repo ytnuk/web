@@ -20,7 +20,7 @@ final class Presenter
 	/**
 	 * @var Entity
 	 */
-	private $webEdit; //TODO:
+	private $entity;
 
 	public function __construct(
 		Repository $repository,
@@ -33,7 +33,7 @@ final class Presenter
 
 	public function actionEdit(string $id)
 	{
-		if ( ! $this->webEdit = $this->repository->getById($id)) {
+		if ( ! $this->entity = $this->repository->getById($id)) {
 			$this->error();
 		}
 	}
@@ -46,6 +46,6 @@ final class Presenter
 	//TODO:
 	protected function createComponentWebTODO() : Control
 	{
-		return $this->control->create($this->webEdit ? : new Entity);
+		return $this->control->create($this->entity ? : new Entity);
 	}
 }
