@@ -29,6 +29,10 @@ final class Factory
 			$storage,
 			self::class
 		);
+	}
+
+	public function create()
+	{
 		foreach ($this->repository->findAll() as $web) {
 			$this[] = new Nette\Application\Routers\Route(
 				'//[!<web>][!:8080][/<locale>]/<module>[/<action>][/<id>]',

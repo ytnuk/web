@@ -26,6 +26,7 @@ final class Extension
 		$builder = $this->getContainerBuilder();
 		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
 		$router->setFactory(Router\Factory::class);
+		$router->addSetup('create');
 	}
 
 	public function getConfigResources() : array
