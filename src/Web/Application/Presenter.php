@@ -9,7 +9,7 @@ abstract class Presenter
 {
 
 	/**
-	 * @var Ytnuk\Translation\Locale\Entity
+	 * @var string
 	 * @persistent
 	 */
 	public $locale;
