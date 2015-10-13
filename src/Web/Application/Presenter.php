@@ -1,7 +1,6 @@
 <?php
 namespace Ytnuk\Web\Application;
 
-use Nette;
 use Ytnuk;
 
 abstract class Presenter
