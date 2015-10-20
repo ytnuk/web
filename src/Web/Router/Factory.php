@@ -35,8 +35,9 @@ final class Factory
 	{
 		foreach ($this->repository->findAll() as $web) {
 			$this[] = new Nette\Application\Routers\Route(
-				'//[!<web>][!:8080][/<locale>]/<module>[/<action>][/<id>]',
-				$this->getMetadataForWeb($web)
+				'//[!v.][!<web>][/<locale>]/<module>[/<action>][/<id>]',
+				$this->getMetadataForWeb($web),
+				Nette\Application\Routers\Route::SECURED
 			);
 		}
 	}
