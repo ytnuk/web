@@ -56,7 +56,7 @@ final class Factory
 						$this,
 						'getMetadataForWeb',
 					],
-					$this->repository->findById($webs)
+					iterator_to_array($this->repository->findById($webs))
 				)
 			);
 		}

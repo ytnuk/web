@@ -5,7 +5,7 @@ use Nextras;
 use Ytnuk;
 
 /**
- * @property string $id
+ * @property string $id {primary}
  * @property Nextras\Orm\Relationships\OneHasOneDirected|Ytnuk\Translation\Entity $name {1:1d Ytnuk\Translation\Entity::$web, primary=true}
  * @property Nextras\Orm\Relationships\OneHasOneDirected|Ytnuk\Menu\Entity $menu {1:1d Ytnuk\Menu\Entity::$web, primary=true}
  * @property Nextras\Orm\Relationships\OneHasMany|Locale\Entity[] $localeNodes {1:m Locale\Entity::$web}

@@ -5,6 +5,7 @@ use Nextras;
 use Ytnuk;
 
 /**
+ * @property int $id {primary}
  * @property Nextras\Orm\Relationships\ManyHasOne|Ytnuk\Web\Entity $web {m:1 Ytnuk\Web\Entity::$localeNodes}
  * @property Nextras\Orm\Relationships\ManyHasOne|Ytnuk\Translation\Locale\Entity $locale {m:1 Ytnuk\Translation\Locale\Entity::$webNodes}
  * @property bool|NULL $primary
