@@ -55,6 +55,15 @@ class Presenter
 		parent::loadState($params);
 	}
 
+	public function sendPayload()
+	{
+		$this->getHttpResponse()->setCode(Nette\Http\IResponse::S200_OK);
+		$payload = $this->getPayload();
+		$payload->disableHistory = TRUE;
+		$payload->redirect = $this->getHttpRequest()->getUrl()->getRelativeUrl();
+		parent::sendPayload();
+	}
+
 	public function actionDefault(
 		Exception $exception
 	) {
@@ -88,14 +97,5 @@ class Presenter
 				$this->code
 			);
 		}
-	}
-
-	public function sendPayload()
-	{
-		$this->getHttpResponse()->setCode(Nette\Http\IResponse::S200_OK);
-		$payload = $this->getPayload();
-		$payload->disableHistory = TRUE;
-		$payload->redirect = $this->getHttpRequest()->getUrl()->getRelativeUrl();
-		parent::sendPayload();
 	}
 }

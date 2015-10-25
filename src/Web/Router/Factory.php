@@ -9,6 +9,8 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
+	const ROUTE_MASK = '//[!v.][!<web>][/<locale>]/<module>[/<action>][/<id>]';
+
 	/**
 	 * @var Ytnuk\Web\Repository
 	 */
@@ -33,30 +35,76 @@ final class Factory
 
 	public function create()
 	{
-		foreach ($this->repository->findAll() as $web) {
-			$this[] = new Nette\Application\Routers\Route(
-				'//[!v.][!<web>][/<locale>]/<module>[/<action>][/<id>]',
-				$this->getMetadataForWeb($web),
-				Nette\Application\Routers\Route::SECURED
+		$metadata = array_filter(
+			array_map(
+				[
+					$this->cache,
+					'load',
+				],
+				$webs = $this->getWebs()
+			)
+		);
+		$webs = array_diff_key(
+			$webs,
+			$metadata
+		);
+		if ($webs) {
+			$metadata = array_merge(
+				$metadata,
+				array_map(
+					[
+						$this,
+						'getMetadataForWeb',
+					],
+					$this->repository->findById($webs)
+				)
 			);
 		}
+		array_walk(
+			$metadata,
+			function (array $metadata) {
+				$this[] = new Nette\Application\Routers\Route(
+					self::ROUTE_MASK,
+					$metadata,
+					Nette\Application\Routers\Route::SECURED
+				);
+			}
+		);
 	}
 
-	private function getMetadataForWeb(Ytnuk\Web\Entity $entity)
+	private function getWebs() : array
 	{
-		return [
-			'web' => [
-				Nette\Application\Routers\Route::VALUE => $entity,
-				Nette\Application\Routers\Route::PATTERN => $entity->id,
-				Nette\Application\Routers\Route::FILTER_IN => function ($web) {
-					return $web instanceof Ytnuk\Web\Entity ? $web : $this->repository->getById($web);
-				},
-				Nette\Application\Routers\Route::FILTER_OUT => function ($web) : string {
-					return $web instanceof Ytnuk\Web\Entity ? $web->id : $web;
-				},
-			],
-		] + $this->cache->load(
-			$entity->getCacheKey(),
+		$this->repository->onAfterInsert[] = function () {
+			$this->cache->remove(get_class($this->repository));
+		};
+
+		return $this->cache->load(
+			get_class($this->repository),
+			function (& $dependencies) {
+				$dependencies[Nette\Caching\Cache::TAGS] = [];
+
+				return array_map(
+					function (Ytnuk\Web\Entity $entity) use
+					(
+						$dependencies
+					) {
+						$dependencies[Nette\Caching\Cache::TAGS] = array_merge(
+							$dependencies[Nette\Caching\Cache::TAGS],
+							$entity->getCacheTags()
+						);
+
+						return $entity->id;
+					},
+					iterator_to_array($this->repository->findAll())
+				);
+			}
+		);
+	}
+
+	private function getMetadataForWeb(Ytnuk\Web\Entity $entity) : array
+	{
+		return $this->cache->load(
+			$entity->id,
 			function (& $dependencies) use
 			(
 				$entity
@@ -72,6 +120,10 @@ final class Factory
 				}
 
 				return [
+					'web' => [
+						Nette\Application\Routers\Route::VALUE => $entity->id,
+						Nette\Application\Routers\Route::PATTERN => $entity->id,
+					],
 					'module' => $entity->menu->link->module,
 					'presenter' => $entity->menu->link->presenter,
 					'action' => $entity->menu->link->action,
