@@ -3,6 +3,7 @@ namespace Ytnuk\Web;
 
 use Kdyby;
 use Nette;
+use VitKutny;
 use Ytnuk;
 
 final class Extension
@@ -18,6 +19,22 @@ final class Extension
 	function __construct(string $wwwDir)
 	{
 		$this->wwwDir = $wwwDir;
+	}
+
+	public function setCompiler(
+		Nette\DI\Compiler $compiler,
+		$name
+	) {
+		$extension = parent::setCompiler(
+			$compiler,
+			$name
+		);
+		$compiler->addExtension(
+			$this->prefix('version'),
+			new VitKutny\Version\Extension
+		);
+
+		return $extension;
 	}
 
 	public function beforeCompile()
