@@ -75,11 +75,11 @@ final class Factory
 	private function getWebs() : array
 	{
 		$this->repository->onAfterInsert[] = function () {
-			$this->cache->remove(get_class($this->repository));
+			$this->cache->remove(NULL);
 		};
 
 		return $this->cache->load(
-			get_class($this->repository),
+			NULL,
 			function (& $dependencies) {
 				$dependencies[Nette\Caching\Cache::TAGS] = [];
 
