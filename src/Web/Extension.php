@@ -23,13 +23,14 @@ final class Extension
 	public function setCompiler(
 		Nette\DI\Compiler $compiler,
 		$name
-	) : self {
+	) : self
+	{
 		$extension = parent::setCompiler(
 			$compiler,
 			$name
 		);
 		$compiler->addExtension(
-			$this->prefix('version'),
+			'vitkutny.version',
 			new VitKutny\Version\Extension
 		);
 
