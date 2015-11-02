@@ -8,18 +8,17 @@ use Ytnuk;
 
 final class Extension
 	extends Nette\DI\CompilerExtension
-	implements Ytnuk\Config\Provider
+	implements Kdyby\Translation\DI\ITranslationProvider, Ytnuk\Orm\Provider
 {
 
 	/**
-	 * @var string
+	 * @var array
 	 */
-	private $wwwDir;
-
-	function __construct(string $wwwDir)
-	{
-		$this->wwwDir = $wwwDir;
-	}
+	private $defaults = [
+		'error' => [
+			'presenter' => 'Web:Error:Presenter',
+		],
+	];
 
 	public function setCompiler(
 		Nette\DI\Compiler $compiler,
@@ -37,6 +36,15 @@ final class Extension
 		return $extension;
 	}
 
+	public function loadConfiguration()
+	{
+		parent::loadConfiguration();
+		$this->validateConfig($this->defaults);
+		$builder = $this->getContainerBuilder();
+		$builder->addDefinition($this->prefix('control'))->setImplement(Control\Factory::class);
+		$builder->addDefinition($this->prefix('form.control'))->setImplement(Form\Control\Factory::class);
+	}
+
 	public function beforeCompile()
 	{
 		parent::beforeCompile();
@@ -44,33 +52,26 @@ final class Extension
 		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
 		$router->setFactory(Router\Factory::class);
 		$router->addSetup('create');
+		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
+		$application->addSetup(
+			'$errorPresenter',
+			[$this->config['error']['presenter']]
+		);
 	}
 
-	public function getConfigResources() : array
+	public function getTranslationResources() : array
 	{
 		return [
-			Ytnuk\Orm\Extension::class => [
-				'repositories' => [
-					$this->prefix('repository') => Repository::class,
-					$this->prefix('localeRepository') => Locale\Repository::class,
-				],
-			],
-			Ytnuk\Alias\Extension::class => [
-				'pattern' => [
-					'Ytnuk\*' => basename(dirname($this->wwwDir)) . '\\$1',
-				],
-			],
-			Kdyby\Translation\DI\TranslationExtension::class => [
-				'dirs' => [
-					__DIR__ . '/../../locale',
-				],
-			],
-			'services' => [
-				Control\Factory::class,
-				Form\Control\Factory::class,
-			],
-			Nette\Bridges\ApplicationDI\ApplicationExtension::class => [
-				'errorPresenter' => 'Web:Error:Presenter',
+			__DIR__ . '/../../locale',
+		];
+	}
+
+	public function getOrmResources() : array
+	{
+		return [
+			'repositories' => [
+				$this->prefix('repository') => Repository::class,
+				$this->prefix('localeRepository') => Locale\Repository::class,
 			],
 		];
 	}
