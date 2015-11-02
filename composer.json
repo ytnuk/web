@@ -3,7 +3,6 @@
 	"require": {
 		"ytnuk/application": "dev-master",
 		"nette/di": "dev-master",
-		"ytnuk/config": "dev-master",
 		"ytnuk/message": "dev-master",
 		"vitkutny/version": "~1.0"
 	},
