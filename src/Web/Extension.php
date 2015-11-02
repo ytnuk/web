@@ -23,7 +23,7 @@ final class Extension
 	public function setCompiler(
 		Nette\DI\Compiler $compiler,
 		$name
-	) {
+	) : self {
 		$extension = parent::setCompiler(
 			$compiler,
 			$name
