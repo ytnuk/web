@@ -57,7 +57,6 @@ abstract class Presenter
 	}
 
 	//TODO: should not be used for accesing menu, create directly menu control using multiplier and access directly using an identifier
-
 	protected function createComponentWeb() : Ytnuk\Web\Control
 	{
 		return $this->control->create($this->entity);
