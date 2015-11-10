@@ -20,6 +20,29 @@ final class Extension
 		],
 	];
 
+	public function beforeCompile()
+	{
+		parent::beforeCompile();
+		$builder = $this->getContainerBuilder();
+		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
+		$router->setFactory(Router\Factory::class);
+		$router->addSetup('create');
+		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
+		$application->addSetup(
+			'$errorPresenter',
+			[$this->config['error']['presenter']]
+		);
+	}
+
+	public function loadConfiguration()
+	{
+		parent::loadConfiguration();
+		$this->validateConfig($this->defaults);
+		$builder = $this->getContainerBuilder();
+		$builder->addDefinition($this->prefix('control'))->setImplement(Control\Factory::class);
+		$builder->addDefinition($this->prefix('form.control'))->setImplement(Form\Control\Factory::class);
+	}
+
 	public function setCompiler(
 		Nette\DI\Compiler $compiler,
 		$name
@@ -35,29 +58,6 @@ final class Extension
 		);
 
 		return $extension;
-	}
-
-	public function loadConfiguration()
-	{
-		parent::loadConfiguration();
-		$this->validateConfig($this->defaults);
-		$builder = $this->getContainerBuilder();
-		$builder->addDefinition($this->prefix('control'))->setImplement(Control\Factory::class);
-		$builder->addDefinition($this->prefix('form.control'))->setImplement(Form\Control\Factory::class);
-	}
-
-	public function beforeCompile()
-	{
-		parent::beforeCompile();
-		$builder = $this->getContainerBuilder();
-		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
-		$router->setFactory(Router\Factory::class);
-		$router->addSetup('create');
-		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
-		$application->addSetup(
-			'$errorPresenter',
-			[$this->config['error']['presenter']]
-		);
 	}
 
 	public function getTranslationResources() : array

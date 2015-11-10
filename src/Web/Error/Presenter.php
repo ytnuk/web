@@ -40,9 +40,7 @@ class Presenter
 	 */
 	public function loadState(array $params)
 	{
-		if (isset($params['request']) && $params['request'] instanceof Nette\Application\Request) {
-			$request = $params['request'];
-		} elseif ( ! $request = $this->application->getRouter()->match($this->getHttpRequest())) {
+		if ( ! $request = $params['request'] ?? $this->application->getRouter()->match($this->getHttpRequest())) {
 			$request = $this->application->getRouter()->match(new Nette\Http\Request(new Nette\Http\UrlScript($this->getHttpRequest()->getUrl()->getBaseUrl())));
 		}
 		if ($request) {
