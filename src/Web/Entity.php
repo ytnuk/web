@@ -6,8 +6,8 @@ use Ytnuk;
 
 /**
  * @property string $id {primary}
- * @property Nextras\Orm\Relationships\OneHasOneDirected|Ytnuk\Translation\Entity $name {1:1d Ytnuk\Translation\Entity::$web, primary=true}
- * @property Nextras\Orm\Relationships\OneHasOneDirected|Ytnuk\Menu\Entity $menu {1:1d Ytnuk\Menu\Entity::$web, primary=true}
+ * @property Nextras\Orm\Relationships\OneHasOne|Ytnuk\Translation\Entity $name {1:1 Ytnuk\Translation\Entity::$web, primary=true}
+ * @property Nextras\Orm\Relationships\OneHasOne|Ytnuk\Menu\Entity $menu {1:1 Ytnuk\Menu\Entity::$web, primary=true}
  * @property Nextras\Orm\Relationships\OneHasMany|Locale\Entity[] $localeNodes {1:m Locale\Entity::$web}
  * @property-read Ytnuk\Translation\Locale\Entity|NULL $locale {virtual}
  */
