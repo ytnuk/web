@@ -1,6 +1,7 @@
 <?php
 namespace Ytnuk\Web\Application;
 
+use Nette;
 use Ytnuk;
 
 abstract class Presenter
@@ -45,7 +46,13 @@ abstract class Presenter
 	protected function beforeRender()
 	{
 		parent::beforeRender();
-		$this->template->web = $this->entity;
+		$template = $this->getTemplate();
+		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
+			$template->add(
+				'web',
+				$this->entity
+			);
+		}
 	}
 
 	protected function startup()
