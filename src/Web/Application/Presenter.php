@@ -55,6 +55,14 @@ abstract class Presenter
 		}
 	}
 
+	public function processSignal()
+	{
+		$this[Ytnuk\Web\Control::NAME][Ytnuk\Web\Tracy\Control::NAME]->redrawControl();
+		parent::processSignal();
+		$this->redrawControl();
+		$this[Ytnuk\Web\Control::NAME]->redrawControl();
+	}
+
 	protected function startup()
 	{
 		parent::startup();
@@ -64,6 +72,7 @@ abstract class Presenter
 	}
 
 	//TODO: should not be used for accessing menu, create directly menu control using multiplier and access directly using an identifier
+
 	protected function createComponentWeb() : Ytnuk\Web\Control
 	{
 		return $this->control->create($this->entity);

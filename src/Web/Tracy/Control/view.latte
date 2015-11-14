@@ -1,0 +1,10 @@
+<script n:if="! Tracy\Debugger::$productionMode && $presenter->isAjax()">
+	{? ob_start()}
+	{? Tracy\Debugger::getBar()->render()}
+	{if $tracy = ob_get_clean()}
+		$('#tracy-debug').remove();
+		{var from = "window.addEventListener('load', function() {"}
+		{var to = "debug.style.display = 'block';"}
+		{substr($tracy, $start = strpos($tracy, $from) + strlen($from), strpos($tracy, $to) + strlen($to) - $start)|noescape}
+	{/if}
+</script>
