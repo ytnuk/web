@@ -35,12 +35,19 @@ abstract class Presenter
 	 */
 	private $control;
 
+	/**
+	 * @var Ytnuk\Message\Control\Factory
+	 */
+	private $messageControl;
+
 	public function injectWeb(
 		Ytnuk\Web\Repository $repository,
-		Ytnuk\Web\Control\Factory $control
+		Ytnuk\Web\Control\Factory $control,
+		Ytnuk\Message\Control\Factory $messageControl
 	) {
 		$this->repository = $repository;
 		$this->control = $control;
+		$this->messageControl = $messageControl;
 	}
 
 	protected function beforeRender()
@@ -71,9 +78,13 @@ abstract class Presenter
 	}
 
 	//TODO: should not be used for accessing menu, create directly menu control using multiplier and access directly using an identifier
-
 	protected function createComponentWeb() : Ytnuk\Web\Control
 	{
 		return $this->control->create($this->entity);
+	}
+
+	protected function createComponentMessage()
+	{
+		return $this->messageControl->create();
 	}
 }

@@ -34,18 +34,12 @@ final class Control
 	 */
 	private $menuControl;
 
-	/**
-	 * @var Ytnuk\Message\Control\Factory
-	 */
-	private $messageControl;
-
 	public function __construct(
 		Entity $web,
 		Repository $repository,
 		Form\Control\Factory $formControl,
 		Ytnuk\Orm\Grid\Control\Factory $gridControl,
-		Ytnuk\Menu\Control\Factory $menuControl,
-		Ytnuk\Message\Control\Factory $messageControl
+		Ytnuk\Menu\Control\Factory $menuControl
 	) {
 		parent::__construct($web);
 		$this->web = $web;
@@ -53,7 +47,6 @@ final class Control
 		$this->formControl = $formControl;
 		$this->gridControl = $gridControl;
 		$this->menuControl = $menuControl; //TODO: should not be here
-		$this->messageControl = $messageControl;
 	}
 
 	protected function startup()
@@ -96,10 +89,4 @@ final class Control
 	{
 		return $this->gridControl->create($this->repository);
 	}
-
-	protected function createComponentMessage()
-	{
-		return $this->messageControl->create();
-	}
-
 }
