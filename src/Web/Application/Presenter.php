@@ -57,7 +57,6 @@ abstract class Presenter
 
 	public function processSignal()
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Web\Tracy\Control::NAME]->redrawControl();
 		parent::processSignal();
 		$this->redrawControl();
 		$this[Ytnuk\Web\Control::NAME]->redrawControl();

@@ -102,8 +102,4 @@ final class Control
 		return $this->messageControl->create();
 	}
 
-	protected function createComponentTracy()
-	{
-		return new Tracy\Control;
-	}
 }
