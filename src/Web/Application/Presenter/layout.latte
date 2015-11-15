@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-	<head n:inner-block="head" n:snippet="head">
+	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		{control web:title snippet => title}
 		<link rel="stylesheet" type="text/css" href="{$basePath . '/temp/styles.css'|version}">
 	</head>
-	<body n:inner-block="body" n:snippet="body" n:class="Nette\Utils\Strings::webalize($presenter->getName()), Nette\Utils\Strings::webalize($presenter->getAction(TRUE))" data-history-nocache>
+	<body>
 		<nav class="navbar navbar-light bg-faded">
 			<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
 				&#9776;
@@ -38,7 +38,7 @@
 			{control web-menu:breadcrumb}
 			<h1>{control web-menu:title}</h1>
 			{control web-message}
-			<main n:snippet="main">
+			<main n:snippet>
 				{include module}
 				<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
 			</main>
@@ -54,7 +54,7 @@
 							</button>
 							<h1 class="modal-title" n:attr="id=>$control[web][menu]->getSnippetId('title')"></h1>
 						</header>
-						<main class="modal-body" n:attr="id=>$control->getSnippetId('main')"></main>
+						<main class="modal-body" n:attr="id=>$control->getSnippetId()"></main>
 						<footer class="modal-footer" n:attr="id=>$control[web][menu]->getSnippetId('navbar')"></footer>
 					</div>
 				</div>
