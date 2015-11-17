@@ -67,6 +67,7 @@ abstract class Presenter
 		parent::processSignal();
 		$this->redrawControl();
 		$this[Ytnuk\Web\Control::NAME]->redrawControl();
+		$this[Ytnuk\Message\Control::NAME]->redrawControl();
 	}
 
 	protected function startup()
