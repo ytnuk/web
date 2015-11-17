@@ -72,7 +72,6 @@ final class Control
 			$redraw
 		);
 		$this[Ytnuk\Menu\Control::NAME]->redrawControl(); //TODO: should not be here
-		$this[Ytnuk\Message\Control::NAME]->redrawControl();
 	}
 
 	protected function createComponentMenu() : Ytnuk\Menu\Control //TODO: should not be here
