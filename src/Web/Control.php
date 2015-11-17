@@ -63,17 +63,6 @@ final class Control
 		] + parent::getViews();
 	}
 
-	public function redrawControl(
-		string $snippet = NULL,
-		bool $redraw = TRUE
-	) {
-		parent::redrawControl(
-			$snippet,
-			$redraw
-		);
-		$this[Ytnuk\Menu\Control::NAME]->redrawControl(); //TODO: should not be here
-	}
-
 	protected function createComponentMenu() : Ytnuk\Menu\Control //TODO: should not be here
 	{
 		return $this->menuControl->create($this->web->menu);
