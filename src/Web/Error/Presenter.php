@@ -4,7 +4,6 @@ namespace Ytnuk\Web\Error;
 use Exception;
 use Nette;
 use Tracy;
-use VojtechDobes;
 use Ytnuk;
 
 final
@@ -27,20 +26,13 @@ class Presenter
 	 */
 	private $code = Nette\Http\IResponse::S404_NOT_FOUND;
 
-	/**
-	 * @var VojtechDobes\NetteAjax\OnResponseHandler
-	 */
-	private $onResponseHandler;
-
 	public function __construct(
 		Nette\Application\Application $application,
-		Tracy\ILogger $logger = NULL,
-		VojtechDobes\NetteAjax\OnResponseHandler $onResponseHandler
+		Tracy\ILogger $logger = NULL
 	) {
 		parent::__construct();
 		$this->application = $application;
 		$this->logger = $logger;
-		$this->onResponseHandler = $onResponseHandler;
 	}
 
 	/**
@@ -64,7 +56,6 @@ class Presenter
 	public function sendPayload()
 	{
 		$this->getHttpResponse()->setCode(Nette\Http\IResponse::S200_OK);
-		$this->onResponseHandler->markForward();
 		$payload = $this->getPayload();
 		$payload->redirect = $this->getHttpRequest()->getUrl()->getRelativeUrl();
 		parent::sendPayload();
