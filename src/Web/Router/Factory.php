@@ -29,7 +29,11 @@ final class Factory
 		$this->repository = $repository;
 		$this->cache = new Nette\Caching\Cache(
 			$storage,
-			self::class
+			strtr(
+				self::class,
+				'\\',
+				Nette\Caching\Cache::NAMESPACE_SEPARATOR
+			)
 		);
 	}
 
