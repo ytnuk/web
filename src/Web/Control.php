@@ -60,6 +60,7 @@ final class Control
 	{
 		return [
 			'title' => TRUE,
+			'navbar' => TRUE,
 		] + parent::getViews();
 	}
 

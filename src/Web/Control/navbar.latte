@@ -1,0 +1,13 @@
+<nav class="navbar navbar-dark bg-inverse navbar-sticky-top">
+	<div class="container">
+		<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target=".navbar-toggleable-{$control->getUniqueId()}">
+			&#9776;
+		</button>
+		<div class="collapse navbar-toggleable-xs navbar-toggleable-{$control->getUniqueId()}">
+			<a n:href="$web->menu->link" class="navbar-brand">
+				{$web}
+			</a>
+			{control menu:navbarNav}
+		</div>
+	</div>
+</nav>
