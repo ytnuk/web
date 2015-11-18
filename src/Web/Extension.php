@@ -48,16 +48,15 @@ final class Extension
 		$name
 	) : self
 	{
-		$extension = parent::setCompiler(
-			$compiler,
-			$name
-		);
 		$compiler->addExtension(
 			'vitkutny.version',
 			new VitKutny\Version\Extension
 		);
 
-		return $extension;
+		return parent::setCompiler(
+			$compiler,
+			$name
+		);
 	}
 
 	public function getTranslationResources() : array
