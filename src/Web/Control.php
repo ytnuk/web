@@ -46,7 +46,7 @@ final class Control
 		$this->repository = $repository;
 		$this->formControl = $formControl;
 		$this->gridControl = $gridControl;
-		$this->menuControl = $menuControl; //TODO: should not be here
+		$this->menuControl = $menuControl;
 	}
 
 	protected function startup()
@@ -64,7 +64,7 @@ final class Control
 		] + parent::getViews();
 	}
 
-	protected function createComponentMenu() : Ytnuk\Menu\Control //TODO: should not be here
+	protected function createComponentMenu() : Ytnuk\Menu\Control
 	{
 		return $this->menuControl->create($this->web->menu);
 	}

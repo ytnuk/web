@@ -131,7 +131,6 @@ final class Factory
 					'module' => $entity->menu->link->module,
 					'presenter' => $entity->menu->link->presenter,
 					'action' => $entity->menu->link->action,
-					//TODO: maybe web should not rely on Menu/Entity at all? should have own Link/Entity
 					'locale' => [
 						Nette\Application\Routers\Route::VALUE => $locale,
 						Nette\Application\Routers\Route::PATTERN => implode(
