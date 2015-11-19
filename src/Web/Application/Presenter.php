@@ -55,7 +55,6 @@ abstract class Presenter
 		parent::beforeRender();
 		$this->redrawControl();
 		$this[Ytnuk\Web\Control::NAME]->redrawControl();
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME]->redrawControl();
 		$this[Ytnuk\Message\Control::NAME]->redrawControl();
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
