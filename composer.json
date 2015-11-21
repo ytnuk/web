@@ -4,6 +4,7 @@
 		"ytnuk/application": "dev-master",
 		"nette/di": "dev-master",
 		"ytnuk/message": "dev-master",
+		"ytnuk/menu": "dev-master",
 		"vitkutny/version": "~1.0"
 	},
 	"autoload": {
