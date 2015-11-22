@@ -6,8 +6,7 @@ use Nette;
 use Tracy;
 use Ytnuk;
 
-final
-class Presenter
+final class Presenter
 	extends Ytnuk\Web\Application\Presenter
 {
 
