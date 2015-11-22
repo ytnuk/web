@@ -1,5 +1,10 @@
 {
 	"name": "ytnuk/web",
+	"extra": {
+		"extensions": {
+			"ytnuk/web": "Ytnuk\\Web\\Extension"
+		}
+	},
 	"require": {
 		"ytnuk/application": "dev-master",
 		"nette/di": "dev-master",

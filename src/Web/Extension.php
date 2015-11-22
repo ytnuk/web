@@ -43,22 +43,6 @@ final class Extension
 		$builder->addDefinition($this->prefix('form.control'))->setImplement(Form\Control\Factory::class);
 	}
 
-	public function setCompiler(
-		Nette\DI\Compiler $compiler,
-		$name
-	) : self
-	{
-		$compiler->addExtension(
-			'vitkutny.version',
-			new VitKutny\Version\Extension
-		);
-
-		return parent::setCompiler(
-			$compiler,
-			$name
-		);
-	}
-
 	public function getTranslationResources() : array
 	{
 		return [
