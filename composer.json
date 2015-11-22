@@ -2,7 +2,7 @@
 	"name": "ytnuk/web",
 	"extra": {
 		"extensions": {
-			"ytnuk_web": "Ytnuk\\Web\\Extension"
+			"ytnuk.web": "Ytnuk\\Web\\Extension"
 		}
 	},
 	"require": {
