@@ -9,7 +9,7 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const ROUTE_MASK = '//[!v.][!<web>][/<locale>]/<module>[/<action>][/<id>]';
+	const ROUTE_MASK = '//[<environment>.][!<web>][/<locale>]/<module>[/<action>][/<id>]';
 
 	/**
 	 * @var Ytnuk\Web\Repository
