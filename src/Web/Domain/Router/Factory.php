@@ -1,5 +1,5 @@
 <?php
-namespace Ytnuk\Web\Router;
+namespace Ytnuk\Web\Domain\Router;
 
 use Nette;
 use Nextras;
@@ -9,10 +9,10 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const ROUTE_MASK = '//[<environment>.][!<web>][/<locale>]/<module>[/<action>][/<id>]';
+	const ROUTE_MASK = '//<domain>[/<locale>]/<module>[/<action>][/<id>]';
 
 	/**
-	 * @var Ytnuk\Web\Repository
+	 * @var Ytnuk\Web\Domain\Repository
 	 */
 	private $repository;
 
@@ -22,7 +22,7 @@ final class Factory
 	private $cache;
 
 	public function __construct(
-		Ytnuk\Web\Repository $repository,
+		Ytnuk\Web\Domain\Repository $repository,
 		Nette\Caching\IStorage $storage
 	) {
 		parent::__construct();
@@ -39,44 +39,43 @@ final class Factory
 
 	public function create()
 	{
-		$metadata = array_filter(
+		$routes = array_filter(
 			array_map(
 				[
 					$this->cache,
 					'load',
 				],
-				$webs = $this->getWebs()
+				$domains = $this->getDomains()
 			)
 		);
-		$webs = array_diff_key(
-			$webs,
-			$metadata
+		$domains = array_diff_key(
+			$domains,
+			$routes
 		);
-		if ($webs) {
-			$metadata = array_merge(
-				$metadata,
+		if ($domains) {
+			$routes = array_merge(
+				$routes,
 				array_map(
 					[
 						$this,
-						'getMetadataForWeb',
+						'getRouteForDomain',
 					],
-					iterator_to_array($this->repository->findById($webs))
+					iterator_to_array($this->repository->findById($domains))
 				)
 			);
 		}
 		array_walk(
-			$metadata,
-			function (array $metadata) {
+			$routes,
+			function (array $route) {
 				$this[] = new Nette\Application\Routers\Route(
-					self::ROUTE_MASK,
-					$metadata,
-					Nette\Application\Routers\Route::SECURED
+					...
+					$route
 				);
 			}
 		);
 	}
 
-	private function getWebs() : array
+	private function getDomains() : array
 	{
 		$this->repository->onAfterInsert[] = function () {
 			$this->cache->remove(NULL);
@@ -88,7 +87,7 @@ final class Factory
 				$dependencies[Nette\Caching\Cache::TAGS] = [];
 
 				return array_map(
-					function (Ytnuk\Web\Entity $entity) use
+					function (Ytnuk\Web\Domain\Entity $entity) use
 					(
 						$dependencies
 					) {
@@ -105,7 +104,7 @@ final class Factory
 		);
 	}
 
-	private function getMetadataForWeb(Ytnuk\Web\Entity $entity) : array
+	private function getRouteForDomain(Ytnuk\Web\Domain\Entity $entity) : array
 	{
 		return $this->cache->load(
 			$entity->id,
@@ -122,23 +121,38 @@ final class Factory
 						$locale = end($locales);
 					}
 				}
-
-				return [
-					'web' => [
-						Nette\Application\Routers\Route::VALUE => $entity->id,
-						Nette\Application\Routers\Route::PATTERN => $entity->id,
-					],
-					'module' => $entity->menu->link->module,
-					'presenter' => $entity->menu->link->presenter,
-					'action' => $entity->menu->link->action,
-					'locale' => [
-						Nette\Application\Routers\Route::VALUE => $locale,
-						Nette\Application\Routers\Route::PATTERN => implode(
-							'|',
-							$locales
-						),
+				$route = [
+					self::ROUTE_MASK,
+					[
+						'domain' => [
+							Nette\Application\Routers\Route::PATTERN => $entity->id,
+						],
+						'web' => $entity->web->id,
+						'module' => $entity->web->menu->link->module,
+						'presenter' => $entity->web->menu->link->presenter,
+						'action' => $entity->web->menu->link->action,
+						'locale' => [
+							Nette\Application\Routers\Route::VALUE => $locale,
+							Nette\Application\Routers\Route::PATTERN => implode(
+								'|',
+								array_map(
+									function (string $locale) {
+										return addcslashes(
+											$locale,
+											'|'
+										);
+									},
+									$locales
+								)
+							),
+						],
 					],
 				];
+				if ($entity->secured) {
+					$route[] = Nette\Application\IRouter::SECURED;
+				}
+
+				return $route;
 			}
 		);
 	}

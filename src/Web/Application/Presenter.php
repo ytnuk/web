@@ -18,7 +18,7 @@ abstract class Presenter
 	 * @var string
 	 * @persistent
 	 */
-	public $web;
+	public $domain;
 
 	/**
 	 * @var Ytnuk\Web\Entity
@@ -68,7 +68,7 @@ abstract class Presenter
 	protected function startup()
 	{
 		parent::startup();
-		if ( ! $this->entity = $this->repository->getById($this->web)) {
+		if ( ! $this->entity = $this->repository->getById($this->getParameter('web'))) {
 			$this->error();
 		}
 	}

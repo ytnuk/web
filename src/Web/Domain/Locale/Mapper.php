@@ -1,5 +1,5 @@
 <?php
-namespace Ytnuk\Web\Locale;
+namespace Ytnuk\Web\Domain\Locale;
 
 use Nextras;
 use Ytnuk;

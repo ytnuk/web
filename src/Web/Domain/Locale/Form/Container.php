@@ -1,5 +1,5 @@
 <?php
-namespace Ytnuk\Web\Locale\Form;
+namespace Ytnuk\Web\Domain\Locale\Form;
 
 use Nette;
 use Nextras;

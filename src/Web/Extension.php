@@ -25,7 +25,7 @@ final class Extension
 		parent::beforeCompile();
 		$builder = $this->getContainerBuilder();
 		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
-		$router->setFactory(Router\Factory::class);
+		$router->setFactory(Domain\Router\Factory::class);
 		$router->addSetup('create');
 		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
 		$application->addSetup(
@@ -55,7 +55,8 @@ final class Extension
 		return [
 			'repositories' => [
 				$this->prefix('repository') => Repository::class,
-				$this->prefix('localeRepository') => Locale\Repository::class,
+				$this->prefix('domainRepository') => Domain\Repository::class,
+				$this->prefix('domainLocaleRepository') => Domain\Locale\Repository::class,
 			],
 		];
 	}
