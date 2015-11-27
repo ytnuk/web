@@ -1,2 +1,12 @@
 {block content}
-<h2 class="display-2">{$code}</h2>
+<div class="jumbotron bg-faded">
+	<h1 class="display-4">
+		{='web.error.message.' . $code . '.title'|translate}
+	</h1>
+	<blockquote class="blockquote">
+		<p>
+			{='web.error.message.' . $code . '.description'|translate|escape|nl2br|noescape}
+		</p>
+		<footer n:if="$code">{$code}</footer>
+	</blockquote>
+</div>

@@ -32,6 +32,12 @@ final class Extension
 			'$errorPresenter',
 			[$this->config['error']['presenter']]
 		);
+		$application->addSetup(
+			'$service->onError[] = ?',
+			[
+				Ytnuk\Web\Error\Presenter::class . '::onError',
+			]
+		);
 	}
 
 	public function loadConfiguration()

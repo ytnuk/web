@@ -2,6 +2,22 @@ presenter:
 	action:
 		edit: Edit web
 error:
-	presenter:
-		title:
-			default: Something went wrong
+	message:
+		0:
+			title: "Oops..."
+			description: "Your browser sent a request that this server could not understand or process."
+		403:
+			title: "Access Denied"
+			description: "You do not have permission to view this page.\n\nPlease try contact the web site administrator if you believe you should be able to view this page."
+		404:
+			title: "Page Not Found"
+			description: "The page you requested could not be found. It is possible that the address is incorrect, or that the page no longer exists.\n\nPlease use a search engine to find what you are looking for."
+		405:
+			title: "Method Not Allowed"
+			description: "The requested method is not allowed for the URL."
+		410:
+			title: "Page Not Found"
+			description: "The page you requested has been taken off the site.\n\nWe apologize for the inconvenience."
+		500:
+			title: "Server Error"
+			description: "We're sorry! The server encountered an internal error and was unable to complete your request.\n\nPlease try again later."

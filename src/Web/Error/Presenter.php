@@ -3,12 +3,29 @@ namespace Ytnuk\Web\Error;
 
 use Exception;
 use Nette;
+use stdClass;
 use Tracy;
 use Ytnuk;
 
 final class Presenter
 	extends Ytnuk\Web\Application\Presenter
 {
+
+	/**
+	 * @var Nette\Application\IPresenter
+	 */
+	private static $lastPresenter;
+
+	/**
+	 * @var array
+	 */
+	private $codes = [
+		Nette\Http\IResponse::S403_FORBIDDEN,
+		Nette\Http\IResponse::S404_NOT_FOUND,
+		Nette\Http\IResponse::S405_METHOD_NOT_ALLOWED,
+		Nette\Http\IResponse::S410_GONE,
+		Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR,
+	];
 
 	/**
 	 * @var Nette\Application\Application
@@ -34,13 +51,18 @@ final class Presenter
 		$this->logger = $logger;
 	}
 
+	public static function onError(Nette\Application\Application $application)
+	{
+		self::$lastPresenter = $application->getPresenter();
+	}
+
 	/**
 	 * @inheritDoc
 	 */
 	public function loadState(array $params)
 	{
-		if ( ! $request = $params['request'] ?? $this->application->getRouter()->match($this->getHttpRequest())) {
-			$request = $this->application->getRouter()->match(new Nette\Http\Request(new Nette\Http\UrlScript($this->getHttpRequest()->getUrl()->getBaseUrl())));
+		if ( ! $request = $params['request'] ?? $this->application->getRouter()->match($httpRequest = $this->getHttpRequest())) {
+			$request = $this->application->getRouter()->match(new Nette\Http\Request(new Nette\Http\UrlScript($httpRequest->getUrl()->getBaseUrl())));
 		}
 		if ($request) {
 			$this->application->onRequest(
@@ -57,14 +79,54 @@ final class Presenter
 		$this->getHttpResponse()->setCode(Nette\Http\IResponse::S200_OK);
 		$payload = $this->getPayload();
 		$payload->redirect = $this->getHttpRequest()->getUrl()->getRelativeUrl();
+		$lastPresenter = self::$lastPresenter;
+		if ($lastPresenter instanceof Nette\Application\UI\Presenter) {
+			try {
+				Nette\Bridges\ApplicationLatte\UIRuntime::renderSnippets(
+					$lastPresenter,
+					new stdClass,
+					[]
+				);
+			} catch (Exception $e) {
+			}
+			$lastPayload = $lastPresenter->getPayload();
+			if ($lastPayload && isset($lastPayload->snippets) && $snippetId = $this->getSnippetId()) {
+				$snippets = array_filter(
+					(array) $lastPayload->snippets,
+					function (string $snippet) use
+					(
+						$snippetId
+					) {
+						return ! Nette\Utils\Strings::startsWith(
+							$snippet,
+							$this->getSnippetId()
+						);
+					},
+					ARRAY_FILTER_USE_KEY
+				);
+				array_walk(
+					$snippets,
+					function (
+						$snippet,
+						$id
+					) use
+					(
+						$payload
+					) {
+						$payload->snippets[$id] = $snippet;
+					}
+				);
+			}
+		}
 		parent::sendPayload();
 	}
 
 	public function actionDefault(
 		Exception $exception
 	) {
-		$code = $exception->getCode();
-		if ( ! $exception instanceof Nette\Application\BadRequestException) {
+		if ($exception instanceof Nette\Application\BadRequestException) {
+			$code = $exception->getCode();
+		} else {
 			$code = Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR;
 			if ($this->logger) {
 				$this->logger->log(
@@ -73,8 +135,16 @@ final class Presenter
 				);
 			}
 		}
+		if ( ! headers_sent() && ob_get_level() && ob_get_length()) {
+			$this->setLayout(FALSE);
+		}
 		$view = $this->getView();
-		$this->setView($this->code = $code);
+		$this->setView(
+			$this->code = in_array(
+				$code,
+				$this->codes
+			) ? $code : 0
+		);
 		if ( ! count($this->formatTemplateFiles())) {
 			$this->setView($view);
 		}
@@ -82,7 +152,6 @@ final class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = 'web.error.presenter.title.' . $this->view;
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			$template->add(
