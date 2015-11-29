@@ -9,7 +9,7 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const ROUTE_MASK = '//<domain>[/<locale>]/<module>[/<action>][/<id>]';
+	const ROUTE_MASK = '//<domain>[/<locale>]/<module>[/<action>[/<id>]]';
 
 	/**
 	 * @var Ytnuk\Web\Domain\Repository
@@ -21,8 +21,29 @@ final class Factory
 	 */
 	private $cache;
 
+	/**
+	 * @var array
+	 */
+	private $moduleIn = [];
+
+	/**
+	 * @var array
+	 */
+	private $actionIn = [];
+
+	/**
+	 * @var array
+	 */
+	private $aliasOut = [];
+
+	/**
+	 * @var Ytnuk\Link\Alias\Repository
+	 */
+	private $linkAliasRepository;
+
 	public function __construct(
 		Ytnuk\Web\Domain\Repository $repository,
+		Ytnuk\Link\Alias\Repository $linkAliasRepository,
 		Nette\Caching\IStorage $storage
 	) {
 		parent::__construct();
@@ -35,6 +56,26 @@ final class Factory
 				Nette\Caching\Cache::NAMESPACE_SEPARATOR
 			)
 		);
+		$this->linkAliasRepository = $linkAliasRepository;
+	}
+
+	public function constructUrl(
+		Nette\Application\Request $appRequest,
+		Nette\Http\Url $refUrl
+	) {
+		$this->aliasOut = [];
+
+		return parent::constructUrl(
+			$appRequest,
+			$refUrl
+		);
+	}
+
+	public function match(Nette\Http\IRequest $httpRequest)
+	{
+		$this->moduleIn = $this->actionIn = [];
+
+		return parent::match($httpRequest);
 	}
 
 	public function create()
@@ -67,9 +108,108 @@ final class Factory
 		array_walk(
 			$routes,
 			function (array $route) {
+				$key = count($this);
 				$this[] = new Nette\Application\Routers\Route(
 					...
-					$route
+					array_values(
+						array_merge_recursive(
+							$route,
+							[
+								'metadata' => [
+									'module' => [
+										Nette\Application\Routers\Route::FILTER_IN => function (string $module) use
+										(
+											$key
+										) {
+											return implode(
+												':',
+												array_map(
+													'ucfirst',
+													explode(
+														'.',
+														$this->moduleIn[$key] = $module
+													)
+												)
+											);
+										},
+										Nette\Application\Routers\Route::FILTER_OUT => function (string $module) use
+										(
+											$key
+										) {
+											$alias = $this->aliasOut[$key] ?? NULL;
+											if ($alias instanceof Ytnuk\Link\Alias\Entity) {
+												return $alias->value;
+											}
+
+											return implode(
+												'.',
+												array_map(
+													'lcfirst',
+													explode(
+														':',
+														$module
+													)
+												)
+											);
+										},
+									],
+									'action' => [
+										Nette\Application\Routers\Route::FILTER_IN => function (string $action) use
+										(
+											$key
+										) {
+											return $this->actionIn[$key] = $action;
+										},
+									],
+									NULL => [
+										Nette\Application\Routers\Route::FILTER_IN => function (array $params) use
+										(
+											$key
+										) {
+											if (isset($this->moduleIn[$key]) && ! isset($this->actionIn[$key]) && $locale = $params['locale'] ?? NULL) {
+												if (isset($params['id'])) {
+													return NULL;
+												}
+												$linkAlias = $this->linkAliasRepository->getBy(
+													[
+														'locale' => $locale,
+														'value' => $this->moduleIn[$key],
+													]
+												);
+												if ($linkAlias instanceof Ytnuk\Link\Alias\Entity && $link = $linkAlias->link) {
+													return [
+														'link' => $link,
+														'module' => $link->module,
+														'presenter' => $link->presenter,
+														'action' => $link->action,
+													] + $link->parameters->get()->fetchPairs(
+														'key',
+														'value'
+													) + $params;
+												}
+											}
+
+											return $params;
+										},
+										Nette\Application\Routers\Route::FILTER_OUT => function (array $params) use
+										(
+											$key
+										) {
+											$link = $params['link'] ?? NULL;
+											if ($link instanceof Ytnuk\Link\Entity && $locale = $params['locale'] ?? NULL) {
+												if ($this->aliasOut[$key] = $link->getterAlias($locale)) {
+													unset($params['action']);
+													unset($params['id']);
+												}
+											}
+
+											return $params;
+										},
+									],
+								],
+							]
+						)
+					)
 				);
 			}
 		);
@@ -121,38 +261,48 @@ final class Factory
 						$locale = end($locales);
 					}
 				}
-				$route = [
-					self::ROUTE_MASK,
-					[
-						'domain' => [
-							Nette\Application\Routers\Route::PATTERN => $entity->id,
-						],
-						'web' => $entity->web->id,
-						'module' => $entity->web->menu->link->module,
-						'presenter' => $entity->web->menu->link->presenter,
-						'action' => $entity->web->menu->link->action,
-						'locale' => [
-							Nette\Application\Routers\Route::VALUE => $locale,
-							Nette\Application\Routers\Route::PATTERN => implode(
-								'|',
-								array_map(
-									function (string $locale) {
-										return addcslashes(
-											$locale,
-											'|'
-										);
-									},
-									$locales
-								)
-							),
-						],
-					],
-				];
-				if ($entity->secured) {
-					$route[] = Nette\Application\IRouter::SECURED;
-				}
 
-				return $route;
+				return array_filter(
+					[
+						'mask' => self::ROUTE_MASK,
+						'metadata' => [
+							'domain' => [
+								Nette\Application\Routers\Route::PATTERN => $entity->id,
+							],
+							'web' => [
+								Nette\Application\Routers\Route::VALUE => $entity->web->id,
+							],
+							'module' => [
+								Nette\Application\Routers\Route::VALUE => $entity->web->menu->link->module,
+							],
+							'presenter' => [
+								Nette\Application\Routers\Route::VALUE => $entity->web->menu->link->presenter,
+							],
+							'action' => [
+								Nette\Application\Routers\Route::VALUE => $entity->web->menu->link->action,
+							],
+							'locale' => [
+								Nette\Application\Routers\Route::VALUE => $locale,
+								Nette\Application\Routers\Route::PATTERN => implode(
+									$glue = '|',
+									array_map(
+										function (string $locale) use
+										(
+											$glue
+										) {
+											return addcslashes(
+												$locale,
+												$glue
+											);
+										},
+										$locales
+									)
+								),
+							],
+						],
+						'secured' => $entity->secured ? Nette\Application\IRouter::SECURED : NULL,
+					]
+				);
 			}
 		);
 	}
