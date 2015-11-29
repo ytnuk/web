@@ -1,5 +1,18 @@
-{block content}
-<blockquote class="blockquote">
+{block title}
+	{if $web->getPersistedId()}
+		{include #parent}
+	{else}
+		<title>{$title}</title>
+	{/if}
+{/block}
+{block body}
+	{if $web->getPersistedId()}
+		{include #parent}
+	{else}
+		<body class="jumbotron container bg-faded">{include module}</body>
+	{/if}
+{/block}
+<blockquote class="blockquote" n:block="content">
 	<p class="lead">
 		{='web.error.message.' . $code . '.description'|translate|escape|nl2br|noescape}
 	</p>

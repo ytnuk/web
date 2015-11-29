@@ -3,6 +3,7 @@ namespace Ytnuk\Web\Error;
 
 use Exception;
 use Nette;
+use ReflectionProperty;
 use stdClass;
 use Tracy;
 use Ytnuk;
@@ -121,6 +122,24 @@ final class Presenter
 		parent::sendPayload();
 	}
 
+	protected function startup()
+	{
+		try {
+			parent::startup();
+		} catch (Nette\Application\BadRequestException $exception) {
+			$entityProperty = new ReflectionProperty(
+				parent::class,
+				'entity'
+			);
+			$entityProperty->setAccessible(TRUE);
+			$entityProperty->setValue(
+				$this,
+				$web = new Ytnuk\Web\Entity
+			);
+			$web->menu = new Ytnuk\Menu\Entity;
+		}
+	}
+
 	public function actionDefault(
 		Exception $exception
 	) {
@@ -152,7 +171,7 @@ final class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = 'web.error.message.' . $this->code . '.title';
+		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = $title = 'web.error.message.' . $this->code . '.title';
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			$template->add(
@@ -161,6 +180,9 @@ final class Presenter
 			)->add(
 				'code',
 				$this->code
+			)->add(
+				'title',
+				$title
 			);
 		}
 	}
