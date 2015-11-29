@@ -2,7 +2,7 @@
 	{if $web->getPersistedId()}
 		{include #parent}
 	{else}
-		<title>{$title}</title>
+		<title>{$title|translate}</title>
 	{/if}
 {/block}
 {block body}
