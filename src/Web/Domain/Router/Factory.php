@@ -3,13 +3,15 @@ namespace Ytnuk\Web\Domain\Router;
 
 use Nette;
 use Nextras;
+use VitKutny;
 use Ytnuk;
 
 final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const ROUTE_MASK = '//<domain>[/<locale>]/<module>[/<action>[/<id>]]';
+	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>';
+	const WEB_MASK = '//<domain>[/<locale>]/<module>[/<action>[/<id>]]';
 
 	/**
 	 * @var Ytnuk\Web\Domain\Repository
@@ -41,12 +43,25 @@ final class Factory
 	 */
 	private $linkAliasRepository;
 
+	/**
+	 * @var string
+	 */
+	private $wwwDir;
+
+	/**
+	 * @var VitKutny\Version\Filter
+	 */
+	private $versionFilter;
+
 	public function __construct(
+		string $wwwDir,
 		Ytnuk\Web\Domain\Repository $repository,
 		Ytnuk\Link\Alias\Repository $linkAliasRepository,
+		VitKutny\Version\Filter $versionFilter,
 		Nette\Caching\IStorage $storage
 	) {
 		parent::__construct();
+		$this->wwwDir = $wwwDir;
 		$this->repository = $repository;
 		$this->cache = new Nette\Caching\Cache(
 			$storage,
@@ -57,6 +72,7 @@ final class Factory
 			)
 		);
 		$this->linkAliasRepository = $linkAliasRepository;
+		$this->versionFilter = $versionFilter;
 	}
 
 	public function constructUrl(
@@ -108,12 +124,143 @@ final class Factory
 		array_walk(
 			$routes,
 			function (array $route) {
+				$fileRoute = ['mask' => self::FILE_MASK] + $route;
+				$web = $fileRoute['metadata']['web'][Nette\Application\Routers\Route::VALUE];
+				unset($fileRoute['metadata']['web']);
+				$this[] = new Nette\Application\Routers\Route(
+					...
+					array_values(
+						array_merge_recursive(
+							$fileRoute,
+							[
+								'metadata' => [
+									'file' => [
+										Nette\Application\Routers\Route::PATTERN => '[a-z0-9.-/]+',
+									],
+									NULL => [
+										Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
+											$webDir = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$this->wwwDir,
+													'web',
+													$params['web'],
+												]
+											);
+											$domainDir = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$webDir,
+													'domain',
+													$domain = $params['domain'],
+												]
+											);
+											$file = $params['file'];
+											$webFile = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$webDir,
+													$file,
+												]
+											);
+											$domainFile = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$domainDir,
+													$file,
+												]
+											);
+											if ( ! file_exists($webFile)) {
+												if (file_exists($domainFile)) {
+													$params['webDomain'] = $domain;
+												} else {
+													return NULL;
+												}
+											}
+
+											return $params;
+										},
+										Nette\Application\Routers\Route::FILTER_OUT => function (array $params) use
+										(
+											$web
+										) {
+											if ( ! isset($params['file']) || ! $file = $params['file']) {
+												return NULL;
+											}
+											$wwwFile = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$directory = $this->wwwDir,
+													$file,
+												]
+											);
+											if ( ! file_exists($wwwFile)) {
+												$directory = implode(
+													DIRECTORY_SEPARATOR,
+													[
+														$directory,
+														'web',
+														$params['web'] = $web,
+													]
+												);
+												$webFile = implode(
+													DIRECTORY_SEPARATOR,
+													[
+														$directory,
+														$file,
+													]
+												);
+												if ( ! file_exists($webFile)) {
+													$directory = implode(
+														DIRECTORY_SEPARATOR,
+														[
+															$directory,
+															'domain',
+															$domain = $params['domain'],
+														]
+													);
+													$domainFile = implode(
+														DIRECTORY_SEPARATOR,
+														[
+															$directory,
+															$file,
+														]
+													);
+													if (file_exists($domainFile)) {
+														$params['webDomain'] = $domain;
+													} else {
+														$directory = NULL;
+													}
+												}
+											}
+											if ($directory && isset($params['version'])) {
+												$url = new Nette\Http\Url(
+													call_user_func(
+														$this->versionFilter,
+														$file,
+														$directory,
+														$parameter = 'version'
+													)
+												);
+												$params['version'] = $url->getQueryParameter($parameter);
+											} else {
+												unset($params['version']);
+											}
+
+											return $params;
+										},
+									],
+								],
+							]
+						)
+					)
+				);
 				$key = count($this);
 				$this[] = new Nette\Application\Routers\Route(
 					...
 					array_values(
 						array_merge_recursive(
-							$route,
+							['mask' => self::WEB_MASK] + $route,
 							[
 								'metadata' => [
 									'module' => [
@@ -264,7 +411,6 @@ final class Factory
 
 				return array_filter(
 					[
-						'mask' => self::ROUTE_MASK,
 						'metadata' => [
 							'domain' => [
 								Nette\Application\Routers\Route::PATTERN => $entity->id,

@@ -26,6 +26,7 @@ final class Extension
 		$builder = $this->getContainerBuilder();
 		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
 		$router->setFactory(Domain\Router\Factory::class);
+		$router->setArguments([$builder->parameters['wwwDir']]);
 		$router->addSetup('create');
 		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
 		$application->addSetup(
