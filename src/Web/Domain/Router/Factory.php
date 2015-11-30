@@ -155,12 +155,11 @@ final class Factory
 													$domain = $params['domain'],
 												]
 											);
-											$file = $params['file'];
 											$webFile = implode(
 												DIRECTORY_SEPARATOR,
 												[
 													$webDir,
-													$file,
+													$file = $params['file'],
 												]
 											);
 											$domainFile = implode(
@@ -170,12 +169,10 @@ final class Factory
 													$file,
 												]
 											);
-											if ( ! file_exists($webFile)) {
-												if (file_exists($domainFile)) {
-													$params['webDomain'] = $domain;
-												} else {
-													return NULL;
-												}
+											if (file_exists($domainFile)) {
+												$params['webDomain'] = $domain;
+											} elseif ( ! file_exists($webFile)) {
+												return NULL;
 											}
 
 											return $params;
@@ -190,48 +187,51 @@ final class Factory
 											$wwwFile = implode(
 												DIRECTORY_SEPARATOR,
 												[
-													$directory = $this->wwwDir,
+													$this->wwwDir,
 													$file,
 												]
 											);
-											if ( ! file_exists($wwwFile)) {
-												$directory = implode(
-													DIRECTORY_SEPARATOR,
-													[
-														$directory,
-														'web',
-														$params['web'] = $web,
-													]
-												);
-												$webFile = implode(
-													DIRECTORY_SEPARATOR,
-													[
-														$directory,
-														$file,
-													]
-												);
-												if ( ! file_exists($webFile)) {
-													$directory = implode(
-														DIRECTORY_SEPARATOR,
-														[
-															$directory,
-															'domain',
-															$domain = $params['domain'],
-														]
-													);
-													$domainFile = implode(
-														DIRECTORY_SEPARATOR,
-														[
-															$directory,
-															$file,
-														]
-													);
-													if (file_exists($domainFile)) {
-														$params['webDomain'] = $domain;
-													} else {
-														$directory = NULL;
-													}
-												}
+											$webDir = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$this->wwwDir,
+													'web',
+													$params['web'] = $web,
+												]
+											);
+											$webFile = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$webDir,
+													$file,
+												]
+											);
+											$domainDir = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$webDir,
+													'domain',
+													$domain = $params['domain'],
+												]
+											);
+											$domainFile = implode(
+												DIRECTORY_SEPARATOR,
+												[
+													$domainDir,
+													$file,
+												]
+											);
+											$directory = NULL;
+											if (file_exists($domainFile)) {
+												$params['webDomain'] = $domain;
+												$directory = $domainDir;
+											} elseif (file_exists($webFile)) {
+												$directory = $webDir;
+											} elseif (file_exists($wwwFile)) {
+												unset($params['web']);
+												$directory = $this->wwwDir;
+											} else {
+												return NULL;
 											}
 											if (( ! isset($params['version']) || $params['version']) && $directory) {
 												$url = new Nette\Http\Url(
