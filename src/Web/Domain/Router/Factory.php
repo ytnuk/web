@@ -233,13 +233,13 @@ final class Factory
 													}
 												}
 											}
-											if ($directory && isset($params['version'])) {
+											if (( ! isset($params['version']) || $params['version']) && $directory) {
 												$url = new Nette\Http\Url(
 													call_user_func(
 														$this->versionFilter,
 														$file,
 														$directory,
-														$parameter = 'version'
+														$parameter = is_string($params['version'] ?? NULL) ? $params['version'] : 'version'
 													)
 												);
 												$params['version'] = $url->getQueryParameter($parameter);
