@@ -127,12 +127,12 @@ final class Presenter
 		try {
 			parent::startup();
 		} catch (Nette\Application\BadRequestException $exception) {
-			$entityProperty = new ReflectionProperty(
+			$webProperty = new ReflectionProperty(
 				parent::class,
-				'entity'
+				'web'
 			);
-			$entityProperty->setAccessible(TRUE);
-			$entityProperty->setValue(
+			$webProperty->setAccessible(TRUE);
+			$webProperty->setValue(
 				$this,
 				$web = new Ytnuk\Web\Entity
 			);

@@ -23,7 +23,7 @@ abstract class Presenter
 	/**
 	 * @var Ytnuk\Web\Entity
 	 */
-	private $entity;
+	public $web;
 
 	/**
 	 * @var Ytnuk\Web\Repository
@@ -60,7 +60,7 @@ abstract class Presenter
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			$template->add(
 				'web',
-				$this->entity
+				$this->web
 			);
 		}
 	}
@@ -82,14 +82,14 @@ abstract class Presenter
 	protected function startup()
 	{
 		parent::startup();
-		if ( ! $this->entity = $this->repository->getById($this->getParameter('web'))) {
+		if ( ! $this->web = $this->repository->getById($this->getParameter('web'))) {
 			$this->error();
 		}
 	}
 
 	protected function createComponentWeb() : Ytnuk\Web\Control
 	{
-		return $this->control->create($this->entity);
+		return $this->control->create($this->web);
 	}
 
 	protected function createComponentMessage()
