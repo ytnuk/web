@@ -23,14 +23,14 @@ final class Presenter
 	private $application;
 
 	/**
-	 * @var Nette\Localization\ITranslator
-	 */
-	private $translator;
-
-	/**
 	 * @var Tracy\ILogger
 	 */
 	private $logger;
+
+	/**
+	 * @var Nette\Localization\ITranslator
+	 */
+	private $translator;
 
 	/**
 	 * @var int
@@ -39,13 +39,13 @@ final class Presenter
 
 	public function __construct(
 		Nette\Application\Application $application,
-		Nette\Localization\ITranslator $translator,
-		Tracy\ILogger $logger = NULL
+		Tracy\ILogger $logger = NULL,
+		Nette\Localization\ITranslator $translator = NULL
 	) {
 		parent::__construct();
 		$this->application = $application;
-		$this->translator = $translator;
 		$this->logger = $logger;
+		$this->translator = $translator;
 	}
 
 	public static function onError(Nette\Application\Application $application)
