@@ -154,7 +154,7 @@ final class Presenter
 				);
 			}
 		}
-		if ( ! headers_sent() && ob_get_level() && ob_get_length()) {
+		if (ob_get_level() && ob_get_length()) {
 			$this->setLayout(FALSE);
 		}
 		$view = $this->getView();
