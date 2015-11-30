@@ -3,7 +3,6 @@ namespace Ytnuk\Web\Error;
 
 use Exception;
 use Nette;
-use ReflectionProperty;
 use stdClass;
 use Tracy;
 use Ytnuk;
@@ -127,16 +126,8 @@ final class Presenter
 		try {
 			parent::startup();
 		} catch (Nette\Application\BadRequestException $exception) {
-			$webProperty = new ReflectionProperty(
-				parent::class,
-				'web'
-			);
-			$webProperty->setAccessible(TRUE);
-			$webProperty->setValue(
-				$this,
-				$web = new Ytnuk\Web\Entity
-			);
-			$web->menu = new Ytnuk\Menu\Entity;
+			$this->web = new Ytnuk\Web\Entity;
+			$this->web->menu = new Ytnuk\Menu\Entity;
 		}
 	}
 

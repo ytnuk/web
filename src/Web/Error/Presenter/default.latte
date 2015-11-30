@@ -1,27 +1,27 @@
 {if $presenter->getLayout()}
 	{block title}
-		{if $web->getPersistedId()}
+		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
 			<title>{$title|translate}</title>
 		{/if}
 	{/block}
 	{block styles}
-		{if $web->getPersistedId()}
+		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
 			<link rel="stylesheet" type="text/css" href="{='/styles/index.css'|version}">
 		{/if}
 	{/block}
 	{block scripts}
-		{if $web->getPersistedId()}
+		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
 			<script type="text/javascript" src="{='/scripts/index.js'|version}" async defer></script>
 		{/if}
 	{/block}
 	{block body}
-		{if $web->getPersistedId()}
+		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
 			<body class="jumbotron container bg-faded">{include module}</body>
