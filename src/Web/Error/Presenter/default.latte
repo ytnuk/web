@@ -30,7 +30,7 @@
 {/if}
 <blockquote class="blockquote" n:block="content">
 	<p class="lead">
-		{='web.error.message.' . $code . '.description'|translate|escape|nl2br|noescape}
+		{=$description|translate|escape|nl2br|noescape}
 	</p>
-	<footer n:if="$code">{$code}</footer>
+	<footer>{$code}</footer>
 </blockquote>

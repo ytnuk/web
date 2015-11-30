@@ -4,6 +4,7 @@ namespace Ytnuk\Web\Error;
 use Exception;
 use Nette;
 use stdClass;
+use Symfony;
 use Tracy;
 use Ytnuk;
 
@@ -17,20 +18,14 @@ final class Presenter
 	private static $lastPresenter;
 
 	/**
-	 * @var array
-	 */
-	private $codes = [
-		Nette\Http\IResponse::S403_FORBIDDEN,
-		Nette\Http\IResponse::S404_NOT_FOUND,
-		Nette\Http\IResponse::S405_METHOD_NOT_ALLOWED,
-		Nette\Http\IResponse::S410_GONE,
-		Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR,
-	];
-
-	/**
 	 * @var Nette\Application\Application
 	 */
 	private $application;
+
+	/**
+	 * @var Nette\Localization\ITranslator
+	 */
+	private $translator;
 
 	/**
 	 * @var Tracy\ILogger
@@ -40,14 +35,16 @@ final class Presenter
 	/**
 	 * @var int
 	 */
-	private $code = Nette\Http\IResponse::S404_NOT_FOUND;
+	private $code;
 
 	public function __construct(
 		Nette\Application\Application $application,
+		Nette\Localization\ITranslator $translator,
 		Tracy\ILogger $logger = NULL
 	) {
 		parent::__construct();
 		$this->application = $application;
+		$this->translator = $translator;
 		$this->logger = $logger;
 	}
 
@@ -150,9 +147,26 @@ final class Presenter
 		}
 		$view = $this->getView();
 		$this->setView(
-			$this->code = in_array(
-				$code,
-				$this->codes
+			$this->code = $this->translator instanceof Symfony\Component\Translation\TranslatorBagInterface && $this->translator->getCatalogue()->has(
+				implode(
+					'.',
+					[
+						'error.message',
+						$code,
+						'title',
+					]
+				),
+				'web'
+			) && $this->translator->getCatalogue()->has(
+				implode(
+					'.',
+					[
+						'error.message',
+						$code,
+						'description',
+					]
+				),
+				'web'
 			) ? $code : 0
 		);
 		if ( ! count($this->formatTemplateFiles())) {
@@ -162,7 +176,14 @@ final class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = $title = 'web.error.message.' . $this->code . '.title';
+		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = $title = implode(
+			'.',
+			[
+				'web.error.message',
+				$this->code,
+				'title',
+			]
+		);
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
 			$template->add(
@@ -174,6 +195,16 @@ final class Presenter
 			)->add(
 				'title',
 				$title
+			)->add(
+				'description',
+				implode(
+					'.',
+					[
+						'web.error.message',
+						$this->code,
+						'description',
+					]
+				)
 			);
 		}
 	}
