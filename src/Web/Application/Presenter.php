@@ -65,6 +65,20 @@ abstract class Presenter
 		}
 	}
 
+	protected function createRequest(
+		$component,
+		$destination,
+		array $args,
+		$mode
+	) {
+		return parent::createRequest(
+			$component,
+			$destination instanceof Ytnuk\Web\Entity ? $destination->menu->link : $destination,
+			$args,
+			$mode
+		);
+	}
+
 	protected function startup()
 	{
 		parent::startup();
