@@ -176,7 +176,7 @@ final class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this['web-menu'][] = $title = implode(
+		$this['web']['menu'][] = $title = implode(
 			'.',
 			[
 				'web.error.message',

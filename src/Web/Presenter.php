@@ -40,10 +40,9 @@ final class Presenter
 
 	public function renderEdit()
 	{
-		$this['web-menu'][] = 'web.presenter.action.edit';
+		$this['web']['menu'][] = 'web.presenter.action.edit';
 	}
 
-	//TODO:
 	protected function createComponentWeb() : Control
 	{
 		$control = parent::createComponentWeb();
