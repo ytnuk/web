@@ -44,8 +44,11 @@ final class Presenter
 	}
 
 	//TODO:
-	protected function createComponentWebTODO() : Control
+	protected function createComponentWeb() : Control
 	{
-		return $this->control->create($this->entity ? : new Entity);
+		$control = parent::createComponentWeb();
+		$control['form']->setEntity($this->entity ? : new Entity);
+
+		return $control;
 	}
 }
