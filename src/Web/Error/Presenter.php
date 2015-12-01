@@ -176,7 +176,7 @@ final class Presenter
 
 	public function renderDefault(Exception $exception)
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = $title = implode(
+		$this['web-menu'][] = $title = implode(
 			'.',
 			[
 				'web.error.message',

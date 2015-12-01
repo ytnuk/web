@@ -54,8 +54,8 @@ abstract class Presenter
 	{
 		parent::beforeRender();
 		$this->redrawControl();
-		$this[Ytnuk\Web\Control::NAME]->redrawControl();
-		$this[Ytnuk\Message\Control::NAME]->redrawControl();
+		$this['web']->redrawControl();
+		$this['message']->redrawControl();
 	}
 
 	protected function createRequest(

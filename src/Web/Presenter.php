@@ -40,7 +40,7 @@ final class Presenter
 
 	public function renderEdit()
 	{
-		$this[Ytnuk\Web\Control::NAME][Ytnuk\Menu\Control::NAME][] = 'web.presenter.action.edit';
+		$this['web-menu'][] = 'web.presenter.action.edit';
 	}
 
 	//TODO:
