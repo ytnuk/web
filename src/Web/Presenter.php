@@ -46,7 +46,7 @@ final class Presenter
 	protected function createComponentWeb() : Control
 	{
 		$control = parent::createComponentWeb();
-		$control['form']->setEntity($this->entity ? : new Entity);
+		$control->setEntity($this->entity ? : new Entity);
 
 		return $control;
 	}

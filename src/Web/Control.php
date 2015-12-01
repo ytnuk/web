@@ -13,6 +13,11 @@ final class Control
 	private $web;
 
 	/**
+	 * @var Entity
+	 */
+	private $entity;
+
+	/**
 	 * @var Ytnuk\Web\Repository
 	 */
 	private $repository;
@@ -40,11 +45,16 @@ final class Control
 		Ytnuk\Menu\Control\Factory $menuControl
 	) {
 		parent::__construct($web);
-		$this->web = $web;
+		$this->setEntity($this->web = $web);
 		$this->repository = $repository;
 		$this->formControl = $formControl;
 		$this->gridControl = $gridControl;
 		$this->menuControl = $menuControl;
+	}
+
+	public function setEntity(Entity $entity)
+	{
+		$this->entity = $entity;
 	}
 
 	protected function startup()
@@ -69,7 +79,7 @@ final class Control
 
 	protected function createComponentForm() : Form\Control
 	{
-		return $this->formControl->create($this->web);
+		return $this->formControl->create($this->entity);
 	}
 
 	protected function createComponentGrid() : Ytnuk\Orm\Grid\Control
