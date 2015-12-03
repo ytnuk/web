@@ -1,10 +1,10 @@
 <?php
 namespace Ytnuk\Web\Error;
 
-use Exception;
 use Nette;
 use stdClass;
 use Symfony;
+use Throwable;
 use Tracy;
 use Ytnuk;
 
@@ -84,7 +84,7 @@ final class Presenter
 					new stdClass,
 					[]
 				);
-			} catch (Exception $e) {
+			} catch (Throwable $e) {
 			}
 			$lastPayload = $lastPresenter->getPayload();
 			if ($lastPayload && isset($lastPayload->snippets) && $snippetId = $this->getSnippetId()) {
@@ -129,7 +129,7 @@ final class Presenter
 	}
 
 	public function actionDefault(
-		Exception $exception
+		Throwable $exception
 	) {
 		if ($exception instanceof Nette\Application\BadRequestException) {
 			$code = $exception->getCode();
@@ -174,7 +174,7 @@ final class Presenter
 		}
 	}
 
-	public function renderDefault(Exception $exception)
+	public function renderDefault(Throwable $exception)
 	{
 		$this['web']['menu'][] = $title = implode(
 			'.',
