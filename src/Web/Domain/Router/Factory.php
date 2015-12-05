@@ -139,36 +139,36 @@ final class Factory
 							],
 							NULL => [
 								Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
-									$params = array_filter(
-										$params,
-										'is_scalar'
-									) === $params ? $this->filterInCache->load(
-										$params,
-										function (& $dependencies) use
-										(
-											$params
-										) {
-											$dependencies = (array) $dependencies;
-											array_walk(
-												$this->filterIn,
-												function (Filter\In $filter) use
-												(
-													& $params,
-													& $dependencies
-												) {
-													$params = $filter->filterIn(
-														$params,
-														$dependencies
-													);
-												}
-											);
+									return array_diff_key(
+										array_filter(
+											$params,
+											'is_scalar'
+										) === $params ? $this->filterInCache->load(
+											$params,
+											function (& $dependencies) use
+											(
+												$params
+											) {
+												$dependencies = (array) $dependencies;
+												array_walk(
+													$this->filterIn,
+													function (Filter\In $filter) use
+													(
+														& $params,
+														& $dependencies
+													) {
+														$params = $filter->filterIn(
+															$params,
+															$dependencies
+														);
+													}
+												);
 
-											return $params;
-										}
-									) : $params;
-									unset($params['slug']);
-
-									return $params;
+												return $params;
+											}
+										) : $params,
+										array_flip(['slug'])
+									);
 								},
 								Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
 									return array_filter(
