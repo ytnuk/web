@@ -139,7 +139,10 @@ final class Factory
 							],
 							NULL => [
 								Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
-									$params = $this->filterInCache->load(
+									$params = array_filter(
+										$params,
+										'is_scalar'
+									) === $params ? $this->filterInCache->load(
 										$params,
 										function (& $dependencies) use
 										(
@@ -162,13 +165,16 @@ final class Factory
 
 											return $params;
 										}
-									);
+									) : $params;
 									unset($params['slug']);
 
 									return $params;
 								},
 								Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
-									return $this->filterOutCache->load(
+									return array_filter(
+										$params,
+										'is_scalar'
+									) === $params ? $this->filterOutCache->load(
 										$params,
 										function (& $dependencies) use
 										(
@@ -191,7 +197,7 @@ final class Factory
 
 											return $params;
 										}
-									);
+									) : $params;
 								},
 							],
 						],
