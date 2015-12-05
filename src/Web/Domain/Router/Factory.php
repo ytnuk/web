@@ -11,7 +11,27 @@ final class Factory
 {
 
 	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>';
-	const WEB_MASK = '//<domain>[/<locale>]/<module>[/<action>[/<id>]]';
+	const WEB_MASK = '//<domain>[/<locale>][[/<slug>]/<id>]/<module>[/<action>]';
+
+	/**
+	 * @var array|Filter\In[]
+	 */
+	private $filterIn = [];
+
+	/**
+	 * @var Nette\Caching\Cache
+	 */
+	private $filterInCache;
+
+	/**
+	 * @var array|Filter\Out[]
+	 */
+	private $filterOut = [];
+
+	/**
+	 * @var Nette\Caching\Cache
+	 */
+	private $filterOutCache;
 
 	/**
 	 * @var Ytnuk\Web\Domain\Repository
@@ -22,26 +42,6 @@ final class Factory
 	 * @var Nette\Caching\Cache
 	 */
 	private $cache;
-
-	/**
-	 * @var array
-	 */
-	private $moduleIn = [];
-
-	/**
-	 * @var array
-	 */
-	private $actionIn = [];
-
-	/**
-	 * @var array
-	 */
-	private $aliasOut = [];
-
-	/**
-	 * @var Ytnuk\Link\Alias\Repository
-	 */
-	private $linkAliasRepository;
 
 	/**
 	 * @var string
@@ -56,7 +56,6 @@ final class Factory
 	public function __construct(
 		string $wwwDir,
 		Ytnuk\Web\Domain\Repository $repository,
-		Ytnuk\Link\Alias\Repository $linkAliasRepository,
 		VitKutny\Version\Filter $versionFilter,
 		Nette\Caching\IStorage $storage
 	) {
@@ -71,27 +70,19 @@ final class Factory
 				Nette\Caching\Cache::NAMESPACE_SEPARATOR
 			)
 		);
-		$this->linkAliasRepository = $linkAliasRepository;
+		$this->filterInCache = $this->cache->derive('filterIn');
+		$this->filterOutCache = $this->cache->derive('filterOut');
 		$this->versionFilter = $versionFilter;
 	}
 
-	public function constructUrl(
-		Nette\Application\Request $appRequest,
-		Nette\Http\Url $refUrl
-	) {
-		$this->aliasOut = [];
-
-		return parent::constructUrl(
-			$appRequest,
-			$refUrl
-		);
+	public function addFilterIn(Filter\In $filter)
+	{
+		$this->filterIn[] = $filter;
 	}
 
-	public function match(Nette\Http\IRequest $httpRequest)
+	public function addFilterOut(Filter\Out $filter)
 	{
-		$this->moduleIn = $this->actionIn = [];
-
-		return parent::match($httpRequest);
+		$this->filterOut[] = $filter;
 	}
 
 	public function create()
@@ -125,17 +116,13 @@ final class Factory
 			$routes,
 			function (array $route) {
 				$this[] = $this->createFileRoute($route);
-				$this[] = $this->createWebRoute(
-					$route,
-					count($this)
-				);
+				$this[] = $this->createWebRoute($route);
 			}
 		);
 	}
 
 	private function createWebRoute(
-		array $route,
-		int $key
+		array $route
 	) {
 		return new Nette\Application\Routers\Route(
 			...
@@ -144,94 +131,67 @@ final class Factory
 					['mask' => self::WEB_MASK] + $route,
 					[
 						'metadata' => [
-							'module' => [
-								Nette\Application\Routers\Route::FILTER_IN => function (string $module) use
-								(
-									$key
-								) {
-									return implode(
-										':',
-										array_map(
-											'ucfirst',
-											explode(
-												'.',
-												$this->moduleIn[$key] = $module
-											)
-										)
-									);
-								},
-								Nette\Application\Routers\Route::FILTER_OUT => function (string $module) use
-								(
-									$key
-								) {
-									$alias = $this->aliasOut[$key] ?? NULL;
-									if ($alias instanceof Ytnuk\Link\Alias\Entity) {
-										return $alias->value;
-									}
-
-									return implode(
-										'.',
-										array_map(
-											'lcfirst',
-											explode(
-												':',
-												$module
-											)
-										)
-									);
-								},
+							'slug' => [
+								Nette\Application\Routers\Route::PATTERN => '[a-z0-9-]+',
 							],
-							'action' => [
-								Nette\Application\Routers\Route::FILTER_IN => function (string $action) use
-								(
-									$key
-								) {
-									return $this->actionIn[$key] = $action;
-								},
+							'id' => [
+								Nette\Application\Routers\Route::PATTERN => '[0-9]+',
 							],
 							NULL => [
-								Nette\Application\Routers\Route::FILTER_IN => function (array $params) use
-								(
-									$key
-								) {
-									if (isset($this->moduleIn[$key]) && ! isset($this->actionIn[$key]) && $locale = $params['locale'] ?? NULL) {
-										if (isset($params['id'])) {
-											return NULL;
+								Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
+									$params = $this->filterInCache->load(
+										$params,
+										function (& $dependencies) use
+										(
+											$params
+										) {
+											$dependencies = (array) $dependencies;
+											array_walk(
+												$this->filterIn,
+												function (Filter\In $filter) use
+												(
+													& $params,
+													& $dependencies
+												) {
+													$params = $filter->filterIn(
+														$params,
+														$dependencies
+													);
+												}
+											);
+
+											return $params;
 										}
-										$linkAlias = $this->linkAliasRepository->getBy(
-											[
-												'locale' => $locale,
-												'value' => $this->moduleIn[$key],
-											]
-										);
-										if ($linkAlias instanceof Ytnuk\Link\Alias\Entity && $link = $linkAlias->link) {
-											return [
-												'link' => $link,
-												'module' => $link->module,
-												'presenter' => $link->presenter,
-												'action' => $link->action,
-											] + $link->parameters->get()->fetchPairs(
-												'key',
-												'value'
-											) + $params;
-										}
-									}
+									);
+									unset($params['slug']);
 
 									return $params;
 								},
-								Nette\Application\Routers\Route::FILTER_OUT => function (array $params) use
-								(
-									$key
-								) {
-									$link = $params['link'] ?? NULL;
-									if ($link instanceof Ytnuk\Link\Entity && $locale = $params['locale'] ?? NULL) {
-										if ($this->aliasOut[$key] = $link->getterAlias($locale)) {
-											unset($params['action']);
-											unset($params['id']);
-										}
-									}
+								Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
+									return $this->filterOutCache->load(
+										$params,
+										function (& $dependencies) use
+										(
+											$params
+										) {
+											$dependencies = (array) $dependencies;
+											array_walk(
+												$this->filterOut,
+												function (Filter\Out $filter) use
+												(
+													& $params,
+													& $dependencies
+												) {
+													$params = $filter->filterOut(
+														$params,
+														$dependencies
+													);
+												}
+											);
 
-									return $params;
+											return $params;
+										}
+									);
 								},
 							],
 						],

@@ -27,6 +27,18 @@ final class Extension
 		$router = $builder->getDefinition($builder->getByType(Nette\Application\IRouter::class));
 		$router->setFactory(Domain\Router\Factory::class);
 		$router->setArguments([$builder->parameters['wwwDir']]);
+		foreach ($builder->findByType(Domain\Router\Filter\In::class) as $filterIn) {
+			$router->addSetup(
+				'addFilterIn',
+				[$filterIn]
+			);
+		}
+		foreach ($builder->findByType(Domain\Router\Filter\Out::class) as $filterOut) {
+			$router->addSetup(
+				'addFilterOut',
+				[$filterOut]
+			);
+		}
 		$router->addSetup('create');
 		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
 		$application->addSetup(
