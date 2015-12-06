@@ -78,6 +78,20 @@ abstract class Presenter
 		if ( ! $this->web = $this->repository->getById($this->getParameter('web'))) {
 			$this->error();
 		}
+		if ($this->getParameter('id') !== NULL) {
+			$action = $this->formatActionMethod($this->getAction());
+			$reflection = $this->getReflection();
+			if ( ! $reflection->hasMethod($action) || ! in_array(
+					'id',
+					array_column(
+						$reflection->getMethod($action)->getParameters(),
+						'name'
+					)
+				)
+			) {
+				$this->error();
+			}
+		}
 	}
 
 	protected function createComponentWeb() : Ytnuk\Web\Control
