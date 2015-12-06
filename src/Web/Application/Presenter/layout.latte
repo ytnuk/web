@@ -9,16 +9,18 @@
 		<script type="text/javascript" src="{link $presenter->web file => 'scripts/index.js'}" async defer n:block="scripts"></script>
 	</head>
 	<body n:block="body">
-		{control web:navbar}
-		<div class="container">
-			{control web-menu:breadcrumb}
-			<h1>{control web-menu:title}</h1>
-			{control message}
-			<main n:snippet>
-				{include module}
-				<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
-			</main>
-		</div>
+		<main>
+			{control web:navbar}
+			<div class="container">
+				{control web-menu:breadcrumb}
+				<h1>{control web-menu:title}</h1>
+				{control message}
+				<main n:snippet>
+					{include module}
+					<a n:href="this" target="_blank">TODO: content from snippets to modal with history</a>
+				</main>
+			</div>
+		</main>
 		<span class="hidden" id="snippet--modal-open"></span>
 		<div class="modal fade" id="modal">
 			<div class="modal-dialog modal-lg">
