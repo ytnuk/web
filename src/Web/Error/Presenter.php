@@ -123,8 +123,10 @@ final class Presenter
 		try {
 			parent::startup();
 		} catch (Nette\Application\BadRequestException $exception) {
-			$this->web = new Ytnuk\Web\Entity;
-			$this->web->menu = new Ytnuk\Menu\Entity;
+			if ( ! $this->web) {
+				$this->web = new Ytnuk\Web\Entity;
+				$this->web->menu = new Ytnuk\Menu\Entity;
+			}
 		}
 	}
 
