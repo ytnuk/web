@@ -1,7 +1,7 @@
 <?php
 namespace Ytnuk\Web\Application;
 
-use Nette;
+use ReflectionClass;
 use Ytnuk;
 
 abstract class Presenter
@@ -58,6 +58,26 @@ abstract class Presenter
 		$this['message']->redrawControl();
 	}
 
+	public function checkRequirements($element)
+	{
+		if ($element instanceof ReflectionClass) {
+			if ($this->getParameter('id') !== NULL) {
+				$action = $this->formatActionMethod($this->getAction());
+				if ( ! $element->hasMethod($action) || ! in_array(
+						'id',
+						array_column(
+							$element->getMethod($action)->getParameters(),
+							'name'
+						)
+					)
+				) {
+					$this->error();
+				}
+			}
+		}
+		parent::checkRequirements($element);
+	}
+
 	protected function createRequest(
 		$component,
 		$destination,
@@ -72,25 +92,11 @@ abstract class Presenter
 		);
 	}
 
-	protected function startup()
+	public function loadState(array $params)
 	{
-		parent::startup();
-		if ( ! $this->web = $this->repository->getById($this->getParameter('web'))) {
+		parent::loadState($params);
+		if ( ! isset($params['web']) || ! $this->web = $this->repository->getById($params['web'])) {
 			$this->error();
-		}
-		if ($this->getParameter('id') !== NULL) {
-			$action = $this->formatActionMethod($this->getAction());
-			$reflection = $this->getReflection();
-			if ( ! $reflection->hasMethod($action) || ! in_array(
-					'id',
-					array_column(
-						$reflection->getMethod($action)->getParameters(),
-						'name'
-					)
-				)
-			) {
-				$this->error();
-			}
 		}
 	}
 

@@ -53,6 +53,14 @@ final class Presenter
 		self::$lastPresenter = $application->getPresenter();
 	}
 
+	public function checkRequirements($element)
+	{
+		try {
+			parent::checkRequirements($element);
+		} catch (Nette\Application\BadRequestException $ex) {
+		};
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -68,7 +76,14 @@ final class Presenter
 			);
 			$params += $request->getParameters();
 		}
-		parent::loadState($params);
+		try {
+			parent::loadState($params);
+		} catch (Nette\Application\BadRequestException $exception) {
+			if ( ! $this->web) {
+				$this->web = new Ytnuk\Web\Entity;
+				$this->web->menu = new Ytnuk\Menu\Entity;
+			}
+		}
 	}
 
 	public function sendPayload()
@@ -118,21 +133,8 @@ final class Presenter
 		parent::sendPayload();
 	}
 
-	protected function startup()
+	public function actionDefault(Throwable $exception)
 	{
-		try {
-			parent::startup();
-		} catch (Nette\Application\BadRequestException $exception) {
-			if ( ! $this->web) {
-				$this->web = new Ytnuk\Web\Entity;
-				$this->web->menu = new Ytnuk\Menu\Entity;
-			}
-		}
-	}
-
-	public function actionDefault(
-		Throwable $exception
-	) {
 		if ($exception instanceof Nette\Application\BadRequestException) {
 			$code = $exception->getCode();
 		} else {
