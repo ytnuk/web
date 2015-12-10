@@ -3,6 +3,7 @@ namespace Ytnuk\Web\Domain\Router;
 
 use Nette;
 use Nextras;
+use Tracy;
 use VitKutny;
 use Ytnuk;
 
@@ -10,7 +11,7 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>';
+	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>'; //TODO: use %domain% insteadof <webDomain>
 	const WEB_MASK = '//<domain>[/<locale>][[/<slug>]/<id>]/<module>[/<action>]';
 
 	/**
@@ -39,6 +40,11 @@ final class Factory
 	private $repository;
 
 	/**
+	 * @var Tracy\ILogger
+	 */
+	private $logger;
+
+	/**
 	 * @var Nette\Caching\Cache
 	 */
 	private $cache;
@@ -57,11 +63,13 @@ final class Factory
 		string $wwwDir,
 		Ytnuk\Web\Domain\Repository $repository,
 		VitKutny\Version\Filter $versionFilter,
+		Tracy\ILogger $logger,
 		Nette\Caching\IStorage $storage
 	) {
 		parent::__construct();
 		$this->wwwDir = $wwwDir;
 		$this->repository = $repository;
+		$this->logger = $logger;
 		$this->cache = new Nette\Caching\Cache(
 			$storage,
 			strtr(
@@ -87,6 +95,16 @@ final class Factory
 
 	public function create()
 	{
+		try {
+			$this->repository->mapper->getStorageReflection();
+		} catch (Nextras\Dbal\QueryException $ex) {
+			$this->logger->log(
+				$ex,
+				Tracy\ILogger::CRITICAL
+			);
+
+			return;
+		}
 		$routes = array_filter(
 			array_map(
 				[
@@ -140,7 +158,7 @@ final class Factory
 							NULL => [
 								Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
 									return array_diff_key(
-										array_filter(
+										$this->filterIn && array_filter(
 											$params,
 											'is_scalar'
 										) === $params ? $this->filterInCache->load(
@@ -171,7 +189,7 @@ final class Factory
 									);
 								},
 								Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
-									return array_filter(
+									return $this->filterOut && array_filter(
 										$params,
 										'is_scalar'
 									) === $params ? $this->filterOutCache->load(
@@ -404,7 +422,7 @@ final class Factory
 					[
 						'metadata' => [
 							'domain' => [
-								Nette\Application\Routers\Route::PATTERN => $entity->id,
+								Nette\Application\Routers\Route::PATTERN => $entity->host,
 							],
 							'web' => [
 								Nette\Application\Routers\Route::VALUE => $entity->web->id,

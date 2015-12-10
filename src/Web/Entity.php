@@ -4,6 +4,7 @@ namespace Ytnuk\Web;
 use Nextras;
 use Ytnuk;
 
+//TODO: id => int
 /**
  * @property string $id {primary}
  * @property Nextras\Orm\Relationships\OneHasOne|Ytnuk\Translation\Entity $name {1:1 Ytnuk\Translation\Entity::$web, primary=true, cascade=[persist, remove]}
