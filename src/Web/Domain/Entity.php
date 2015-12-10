@@ -4,9 +4,8 @@ namespace Ytnuk\Web\Domain;
 use Nextras;
 use Ytnuk;
 
-//TODO: id => int
 /**
- * @property string $id {primary}
+ * @property int $id {primary}
  * @property string $host
  * @property Nextras\Orm\Relationships\ManyHasOne|Ytnuk\Web\Entity $web {m:1 Ytnuk\Web\Entity::$domains}
  * @property bool|NULL $secured
