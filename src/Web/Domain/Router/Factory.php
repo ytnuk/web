@@ -11,7 +11,7 @@ final class Factory
 	extends Nette\Application\Routers\RouteList
 {
 
-	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>'; //TODO: use %domain% insteadof <webDomain>
+	const FILE_MASK = '//<domain>[/web/<web>[/domain/<webDomain>]]/<file>';
 	const WEB_MASK = '//<domain>[/<locale>][[/<slug>]/<id>]/<module>[/<action>]';
 
 	/**
