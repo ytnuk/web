@@ -330,11 +330,9 @@ final class Factory
 										$directory = $domainDir;
 									} elseif (file_exists($webFile)) {
 										$directory = $webDir;
-									} elseif (file_exists($wwwFile)) {
+									} else {
 										unset($params['web']);
 										$directory = $this->wwwDir;
-									} else {
-										return NULL;
 									}
 									if (( ! isset($params['version']) || $params['version']) && $directory) {
 										$url = new Nette\Http\Url(
