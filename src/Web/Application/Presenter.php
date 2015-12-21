@@ -78,6 +78,48 @@ abstract class Presenter
 		parent::checkRequirements($element);
 	}
 
+	protected function createComponentTemplating()
+	{
+		$control = parent::createComponentTemplating();
+		if ($templates = $control->getTemplates()) {
+			$control->setTemplates(
+				array_merge(
+					...
+					array_map(
+						function (string $template) {
+							return [
+								implode(
+									DIRECTORY_SEPARATOR,
+									[
+										dirname($template),
+										'web',
+										$this->web->id,
+										'domain',
+										$this->domain,
+										basename($template),
+									]
+								),
+								implode(
+									DIRECTORY_SEPARATOR,
+									[
+										dirname($template),
+										'web',
+										$this->web->id,
+										basename($template),
+									]
+								),
+								$template,
+							];
+						},
+						$templates
+					)
+				)
+			);
+		}
+
+		return $control;
+	}
+
 	protected function createRequest(
 		$component,
 		$destination,
