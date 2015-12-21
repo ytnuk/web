@@ -1,6 +1,7 @@
 <?php
 namespace Ytnuk\Web\Application;
 
+use Nette;
 use ReflectionClass;
 use Ytnuk;
 
@@ -40,14 +41,21 @@ abstract class Presenter
 	 */
 	private $messageControl;
 
+	/**
+	 * @var Nette\DI\Container
+	 */
+	private $container;
+
 	public function injectWeb(
 		Ytnuk\Web\Repository $repository,
 		Ytnuk\Web\Control\Factory $control,
-		Ytnuk\Message\Control\Factory $messageControl
+		Ytnuk\Message\Control\Factory $messageControl,
+		Nette\DI\Container $container
 	) {
 		$this->repository = $repository;
 		$this->control = $control;
 		$this->messageControl = $messageControl;
+		$this->container = $container;
 	}
 
 	protected function beforeRender()
@@ -76,6 +84,43 @@ abstract class Presenter
 			}
 		}
 		parent::checkRequirements($element);
+	}
+
+	protected function createComponentTemplating()
+	{
+		$control = parent::createComponentTemplating();
+		array_unshift(
+			$control->templates,
+			implode(
+				DIRECTORY_SEPARATOR,
+				[
+					$appDir = $this->container->getParameters()['appDir'],
+					'web',
+					$this->web->id,
+					'domain',
+					$this->domain,
+					'src',
+				]
+			),
+			implode(
+				DIRECTORY_SEPARATOR,
+				[
+					$appDir,
+					'web',
+					$this->web->id,
+					'src',
+				]
+			),
+			implode(
+				DIRECTORY_SEPARATOR,
+				[
+					$appDir,
+					'src',
+				]
+			)
+		);
+
+		return $control;
 	}
 
 	protected function createRequest(
