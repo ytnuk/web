@@ -423,7 +423,7 @@ final class Factory
 								Nette\Application\Routers\Route::PATTERN => $entity->host,
 							],
 							'web' => [
-								Nette\Application\Routers\Route::VALUE => $entity->web->id,
+								Nette\Application\Routers\Route::VALUE => $entity->web->alias,
 							],
 							'module' => [
 								Nette\Application\Routers\Route::VALUE => $entity->web->menu->link->module,

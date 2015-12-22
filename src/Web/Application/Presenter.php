@@ -93,7 +93,7 @@ abstract class Presenter
 									[
 										dirname($template),
 										'web',
-										$this->web->id,
+										$this->web->alias,
 										'domain',
 										$this->domain,
 										basename($template),
@@ -104,7 +104,7 @@ abstract class Presenter
 									[
 										dirname($template),
 										'web',
-										$this->web->id,
+										$this->web->alias,
 										basename($template),
 									]
 								),
@@ -137,7 +137,7 @@ abstract class Presenter
 	public function loadState(array $params)
 	{
 		parent::loadState($params);
-		if ( ! isset($params['web']) || ! $this->web = $this->repository->getById($params['web'])) {
+		if ( ! isset($params['web']) || ! $this->web = $this->repository->getBy(['alias' => $params['web']])) {
 			$this->error();
 		}
 	}
