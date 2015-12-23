@@ -5,8 +5,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		{block title}{control web:title snippet => title}{/block}
-		<link rel="stylesheet" type="text/css" n:href="$presenter->web file => 'styles/index.css'" n:block="styles">
-		<script type="text/javascript" src="{link $presenter->web file => 'scripts/index.js'}" async defer n:block="scripts"></script>
+		<link rel="stylesheet" type="text/css" n:href="$presenter->web file => 'assets/styles/index.css'" n:block="styles">
+		<script type="text/javascript" src="{link $presenter->web file => 'assets/scripts/index.js'}" async defer n:block="scripts"></script>
 	</head>
 	<body n:block="body">
 		<main>
