@@ -137,6 +137,9 @@ final class Presenter
 	{
 		if ($exception instanceof Nette\Application\BadRequestException) {
 			$code = $exception->getCode();
+			if ($this->logger) {
+				$this->logger->log($exception->getMessage());
+			}
 		} else {
 			$code = Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR;
 			if ($this->logger) {

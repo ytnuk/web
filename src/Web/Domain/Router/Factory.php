@@ -100,7 +100,7 @@ final class Factory
 		} catch (Nextras\Dbal\QueryException $ex) {
 			$this->logger->log(
 				$ex,
-				Tracy\ILogger::CRITICAL
+				Tracy\ILogger::EXCEPTION
 			);
 
 			return;
@@ -272,9 +272,9 @@ final class Factory
 											$file,
 										]
 									);
-									if (file_exists($domainFile)) {
+									if (is_file($domainFile)) {
 										$params['webDomain'] = $domain;
-									} elseif ( ! file_exists($webFile)) {
+									} elseif ( ! is_file($webFile)) {
 										return NULL;
 									}
 
@@ -325,10 +325,10 @@ final class Factory
 										]
 									);
 									$directory = NULL;
-									if (file_exists($domainFile)) {
+									if (is_file($domainFile)) {
 										$params['webDomain'] = $domain;
 										$directory = $domainDir;
-									} elseif (file_exists($webFile)) {
+									} elseif (is_file($webFile)) {
 										$directory = $webDir;
 									} else {
 										unset($params['web']);
