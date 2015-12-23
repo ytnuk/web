@@ -10,14 +10,14 @@
 		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
-			<link rel="stylesheet" type="text/css" href="{='/styles/index.css'|version}">
+			<link rel="stylesheet" type="text/css" href="{='/assets/styles/index.css'|version}">
 		{/if}
 	{/block}
 	{block scripts}
 		{if $presenter->web->getPersistedId()}
 			{include #parent}
 		{else}
-			<script type="text/javascript" src="{='/scripts/index.js'|version}" async defer></script>
+			<script type="text/javascript" src="{='/assets/scripts/index.js'|version}" async defer></script>
 		{/if}
 	{/block}
 	{block body}
