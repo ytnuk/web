@@ -28,29 +28,17 @@ final class Extension
 		$router->setFactory(Domain\Router\Factory::class);
 		$router->setArguments([$builder->parameters['wwwDir']]);
 		foreach ($builder->findByType(Domain\Router\Filter\In::class) as $filterIn) {
-			$router->addSetup(
-				'addFilterIn',
-				[$filterIn]
-			);
+			$router->addSetup('addFilterIn', [$filterIn]);
 		}
 		foreach ($builder->findByType(Domain\Router\Filter\Out::class) as $filterOut) {
-			$router->addSetup(
-				'addFilterOut',
-				[$filterOut]
-			);
+			$router->addSetup('addFilterOut', [$filterOut]);
 		}
 		$router->addSetup('create');
 		$application = $builder->getDefinition($builder->getByType(Nette\Application\Application::class));
-		$application->addSetup(
-			'$errorPresenter',
-			[$this->config['error']['presenter']]
-		);
-		$application->addSetup(
-			'$service->onError[] = ?',
-			[
-				Ytnuk\Web\Error\Presenter::class . '::onError',
-			]
-		);
+		$application->addSetup('$errorPresenter', [$this->config['error']['presenter']]);
+		$application->addSetup('$service->onError[] = ?', [
+			Ytnuk\Web\Error\Presenter::class . '::onError',
+		]);
 	}
 
 	public function loadConfiguration()

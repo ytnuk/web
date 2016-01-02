@@ -16,16 +16,10 @@ final class Container
 			switch ($metadata->name) {
 				case 'web':
 				case 'locale':
-					$component->setOption(
-						'unique',
-						TRUE
-					);
+					$component->setOption('unique', TRUE);
 					break;
 				case 'primary':
-					$component->setOption(
-						'unique',
-						'menu'
-					);
+					$component->setOption('unique', 'menu');
 					break;
 			}
 		}

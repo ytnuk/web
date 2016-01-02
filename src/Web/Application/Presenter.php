@@ -63,14 +63,7 @@ abstract class Presenter
 		if ($element instanceof ReflectionClass) {
 			if ($this->getParameter('id') !== NULL) {
 				$action = $this->formatActionMethod($this->getAction());
-				if ( ! $element->hasMethod($action) || ! in_array(
-						'id',
-						array_column(
-							$element->getMethod($action)->getParameters(),
-							'name'
-						)
-					)
-				) {
+				if ( ! $element->hasMethod($action) || ! in_array('id', array_column($element->getMethod($action)->getParameters(), 'name'))) {
 					$this->error();
 				}
 			}
@@ -82,39 +75,26 @@ abstract class Presenter
 	{
 		$control = parent::createComponentTemplating();
 		if ($templates = $control->getTemplates()) {
-			$control->setTemplates(
-				array_merge(
-					...
-					array_map(
-						function (string $template) {
-							return [
-								implode(
-									DIRECTORY_SEPARATOR,
-									[
-										dirname($template),
-										'web',
-										$this->web->alias,
-										'domain',
-										$this->domain,
-										basename($template),
-									]
-								),
-								implode(
-									DIRECTORY_SEPARATOR,
-									[
-										dirname($template),
-										'web',
-										$this->web->alias,
-										basename($template),
-									]
-								),
-								$template,
-							];
-						},
-						$templates
-					)
-				)
-			);
+			$control->setTemplates(array_merge(...
+				array_map(function (string $template) {
+					return [
+						implode(DIRECTORY_SEPARATOR, [
+							dirname($template),
+							'web',
+							$this->web->alias,
+							'domain',
+							$this->domain,
+							basename($template),
+						]),
+						implode(DIRECTORY_SEPARATOR, [
+							dirname($template),
+							'web',
+							$this->web->alias,
+							basename($template),
+						]),
+						$template,
+					];
+				}, $templates)));
 		}
 
 		return $control;
@@ -126,12 +106,7 @@ abstract class Presenter
 		array $args,
 		$mode
 	) {
-		return parent::createRequest(
-			$component,
-			$destination instanceof Ytnuk\Web\Entity ? $destination->menu->link : $destination,
-			$args,
-			$mode
-		);
+		return parent::createRequest($component, $destination instanceof Ytnuk\Web\Entity ? $destination->menu->link : $destination, $args, $mode);
 	}
 
 	public function loadState(array $params)

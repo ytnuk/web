@@ -70,10 +70,7 @@ final class Presenter
 			$request = $this->application->getRouter()->match(new Nette\Http\Request(new Nette\Http\UrlScript($httpRequest->getUrl()->getBaseUrl())));
 		}
 		if ($request) {
-			$this->application->onRequest(
-				$this->application,
-				$request
-			);
+			$this->application->onRequest($this->application, $request);
 			$params += $request->getParameters();
 		}
 		try {
@@ -94,40 +91,26 @@ final class Presenter
 		$lastPresenter = self::$lastPresenter;
 		if ($lastPresenter instanceof Nette\Application\UI\Presenter) {
 			try {
-				Nette\Bridges\ApplicationLatte\UIRuntime::renderSnippets(
-					$lastPresenter,
-					new stdClass,
-					[]
-				);
+				Nette\Bridges\ApplicationLatte\UIRuntime::renderSnippets($lastPresenter, new stdClass, []);
 			} catch (Throwable $e) {
 			}
 			$lastPayload = $lastPresenter->getPayload();
 			if ($lastPayload && isset($lastPayload->snippets) && $snippetId = $this->getSnippetId()) {
-				$snippets = array_filter(
-					(array) $lastPayload->snippets,
-					function (string $snippet) use
-					(
-						$snippetId
-					) {
-						return ! Nette\Utils\Strings::startsWith(
-							$snippet,
-							$this->getSnippetId()
-						);
-					},
-					ARRAY_FILTER_USE_KEY
-				);
-				array_walk(
-					$snippets,
-					function (
-						$snippet,
-						$id
-					) use
-					(
-						$payload
-					) {
-						$payload->snippets[$id] = $snippet;
-					}
-				);
+				$snippets = array_filter((array) $lastPayload->snippets, function (string $snippet) use
+				(
+					$snippetId
+				) {
+					return ! Nette\Utils\Strings::startsWith($snippet, $this->getSnippetId());
+				}, ARRAY_FILTER_USE_KEY);
+				array_walk($snippets, function (
+					$snippet,
+					$id
+				) use
+				(
+					$payload
+				) {
+					$payload->snippets[$id] = $snippet;
+				});
 			}
 		}
 		parent::sendPayload();
@@ -143,39 +126,22 @@ final class Presenter
 		} else {
 			$code = Nette\Http\IResponse::S500_INTERNAL_SERVER_ERROR;
 			if ($this->logger) {
-				$this->logger->log(
-					$exception,
-					Tracy\ILogger::EXCEPTION
-				);
+				$this->logger->log($exception, Tracy\ILogger::EXCEPTION);
 			}
 		}
 		if (ob_get_level() && ob_get_length()) {
 			$this->setLayout(FALSE);
 		}
 		$view = $this->getView();
-		$this->setView(
-			$this->code = $this->translator instanceof Symfony\Component\Translation\TranslatorBagInterface && $this->translator->getCatalogue()->has(
-				implode(
-					'.',
-					[
-						'error.message',
-						$code,
-						'title',
-					]
-				),
-				'web'
-			) && $this->translator->getCatalogue()->has(
-				implode(
-					'.',
-					[
-						'error.message',
-						$code,
-						'description',
-					]
-				),
-				'web'
-			) ? $code : 0
-		);
+		$this->setView($this->code = $this->translator instanceof Symfony\Component\Translation\TranslatorBagInterface && $this->translator->getCatalogue()->has(implode('.', [
+			'error.message',
+			$code,
+			'title',
+		]), 'web') && $this->translator->getCatalogue()->has(implode('.', [
+			'error.message',
+			$code,
+			'description',
+		]), 'web') ? $code : 0);
 		if ( ! count($this->formatTemplateFiles())) {
 			$this->setView($view);
 		}
@@ -183,36 +149,18 @@ final class Presenter
 
 	public function renderDefault(Throwable $exception)
 	{
-		$this['web']['menu'][] = $title = implode(
-			'.',
-			[
-				'web.error.message',
-				$this->code,
-				'title',
-			]
-		);
+		$this['web']['menu'][] = $title = implode('.', [
+			'web.error.message',
+			$this->code,
+			'title',
+		]);
 		$template = $this->getTemplate();
 		if ($template instanceof Nette\Bridges\ApplicationLatte\Template) {
-			$template->add(
-				'exception',
-				$exception
-			)->add(
-				'code',
-				$this->code
-			)->add(
-				'title',
-				$title
-			)->add(
+			$template->add('exception', $exception)->add('code', $this->code)->add('title', $title)->add('description', implode('.', [
+				'web.error.message',
+				$this->code,
 				'description',
-				implode(
-					'.',
-					[
-						'web.error.message',
-						$this->code,
-						'description',
-					]
-				)
-			);
+			]));
 		}
 	}
 }
