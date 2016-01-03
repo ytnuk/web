@@ -156,7 +156,7 @@ final class Factory
 									$params = $filter->filterOut($params, $dependencies);
 								});
 
-								return $params;
+								return array_filter($params);
 							}) : $params;
 						},
 					],
