@@ -9,7 +9,7 @@ use Ytnuk;
  * @property string $host
  * @property Nextras\Orm\Relationships\ManyHasOne|Ytnuk\Web\Entity $web {m:1 Ytnuk\Web\Entity::$domains}
  * @property bool|NULL $secured
- * @property Nextras\Orm\Relationships\OneHasMany|Locale\Entity[] $localeNodes {1:m Locale\Entity::$domain}
+ * @property Nextras\Orm\Relationships\OneHasMany|Locale\Entity[] $localeNodes {1:m Locale\Entity::$domain, cascade=[persist, remove]}
  * @property-read Ytnuk\Translation\Locale\Entity|NULL $locale {virtual}
  */
 final class Entity
