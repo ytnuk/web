@@ -210,10 +210,6 @@ final class Factory
 							if ( ! isset($params['file']) || ! $file = $params['file']) {
 								return NULL;
 							}
-							$wwwFile = implode(DIRECTORY_SEPARATOR, [
-								$this->wwwDir,
-								$file,
-							]);
 							$webDir = implode(DIRECTORY_SEPARATOR, [
 								$this->wwwDir,
 								'web',
