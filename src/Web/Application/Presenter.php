@@ -75,26 +75,25 @@ abstract class Presenter
 	{
 		$control = parent::createComponentTemplating();
 		if ($templates = $control->getTemplates()) {
-			$control->setTemplates(array_merge(...
-				array_map(function (string $template) {
-					return [
-						implode(DIRECTORY_SEPARATOR, [
-							dirname($template),
-							'web',
-							$this->web->alias,
-							'domain',
-							$this->domain,
-							basename($template),
-						]),
-						implode(DIRECTORY_SEPARATOR, [
-							dirname($template),
-							'web',
-							$this->web->alias,
-							basename($template),
-						]),
-						$template,
-					];
-				}, $templates)));
+			$control->setTemplates(array_merge(...array_map(function (string $template) {
+				return [
+					implode(DIRECTORY_SEPARATOR, [
+						dirname($template),
+						'web',
+						$this->web->alias,
+						'domain',
+						$this->domain,
+						basename($template),
+					]),
+					implode(DIRECTORY_SEPARATOR, [
+						dirname($template),
+						'web',
+						$this->web->alias,
+						basename($template),
+					]),
+					$template,
+				];
+			}, $templates)));
 		}
 
 		return $control;

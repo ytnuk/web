@@ -115,53 +115,52 @@ final class Factory
 	private function createWebRoute(
 		array $route
 	) {
-		return new Nette\Application\Routers\Route(...
-			array_values(array_merge_recursive(['mask' => self::WEB_MASK] + $route, [
-				'metadata' => [
-					'slug' => [
-						Nette\Application\Routers\Route::PATTERN => '[a-z0-9-]+',
-					],
-					'id' => [
-						Nette\Application\Routers\Route::PATTERN => '[0-9]+',
-					],
-					NULL => [
-						Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
-							return array_diff_key($this->filterIn && array_filter($params, 'is_scalar') === $params ? $this->filterInCache->load($params, function (& $dependencies) use
-							(
-								$params
-							) {
-								$dependencies = (array) $dependencies;
-								array_walk($this->filterIn, function (Filter\In $filter) use
-								(
-									& $params,
-									& $dependencies
-								) {
-									$params = $filter->filterIn($params, $dependencies);
-								});
-
-								return $params;
-							}) : $params, array_flip(['slug']));
-						},
-						Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
-							return $this->filterOut && array_filter($params, 'is_scalar') === $params ? $this->filterOutCache->load($params, function (& $dependencies) use
-							(
-								$params
-							) {
-								$dependencies = (array) $dependencies;
-								array_walk($this->filterOut, function (Filter\Out $filter) use
-								(
-									& $params,
-									& $dependencies
-								) {
-									$params = $filter->filterOut($params, $dependencies);
-								});
-
-								return array_filter($params);
-							}) : $params;
-						},
-					],
+		return new Nette\Application\Routers\Route(...array_values(array_merge_recursive(['mask' => self::WEB_MASK] + $route, [
+			'metadata' => [
+				'slug' => [
+					Nette\Application\Routers\Route::PATTERN => '[a-z0-9-]+',
 				],
-			])));
+				'id' => [
+					Nette\Application\Routers\Route::PATTERN => '[0-9]+',
+				],
+				NULL => [
+					Nette\Application\Routers\Route::FILTER_IN => function (array $params) {
+						return array_diff_key($this->filterIn && array_filter($params, 'is_scalar') === $params ? $this->filterInCache->load($params, function (& $dependencies) use
+						(
+							$params
+						) {
+							$dependencies = (array) $dependencies;
+							array_walk($this->filterIn, function (Filter\In $filter) use
+							(
+								& $params,
+								& $dependencies
+							) {
+								$params = $filter->filterIn($params, $dependencies);
+							});
+
+							return $params;
+						}) : $params, array_flip(['slug']));
+					},
+					Nette\Application\Routers\Route::FILTER_OUT => function (array $params) {
+						return $this->filterOut && array_filter($params, 'is_scalar') === $params ? $this->filterOutCache->load($params, function (& $dependencies) use
+						(
+							$params
+						) {
+							$dependencies = (array) $dependencies;
+							array_walk($this->filterOut, function (Filter\Out $filter) use
+							(
+								& $params,
+								& $dependencies
+							) {
+								$params = $filter->filterOut($params, $dependencies);
+							});
+
+							return array_filter($params);
+						}) : $params;
+					},
+				],
+			],
+		])));
 	}
 
 	private function createFileRoute(array $route)
