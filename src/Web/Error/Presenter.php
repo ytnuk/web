@@ -91,7 +91,7 @@ final class Presenter
 		$lastPresenter = self::$lastPresenter;
 		if ($lastPresenter instanceof Nette\Application\UI\Presenter) {
 			try {
-				Nette\Bridges\ApplicationLatte\UIRuntime::renderSnippets($lastPresenter, new stdClass, []);
+				Nette\Bridges\ApplicationLatte\UIRuntime::renderSnippets($lastPresenter);
 			} catch (Throwable $e) {
 			}
 			$lastPayload = $lastPresenter->getPayload();
