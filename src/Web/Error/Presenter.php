@@ -2,7 +2,6 @@
 namespace Ytnuk\Web\Error;
 
 use Nette;
-use stdClass;
 use Symfony;
 use Throwable;
 use Tracy;
